@@ -125,7 +125,7 @@ export class ChannelsService {
 
                     if(channel.lastUpdate < new Date(Date.now() - channel.intervalUpdate) || force){
                         try {
-                            const channelTimeout = 120000;
+                            const channelTimeout = 5000;
 
                             await Promise.race([
                                 this.processSingleChannel(channel),

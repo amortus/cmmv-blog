@@ -54,8 +54,9 @@ export class ParserService {
      */
     private async fetchHTML(url: string): Promise<string> {
         try {
+
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
 
             this.logger.log(`Starting fetch for URL: ${url}`);
 
@@ -65,10 +66,11 @@ export class ParserService {
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
                 },
-                signal: controller.signal
+                signal: AbortSignal.timeout(2000)
             });
 
             clearTimeout(timeoutId);
+            console.log(response);
 
             if (!response.ok)
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -446,6 +448,8 @@ ${truncatedHtml}
 
             let confidenceScore = 0;
 
+            console.log("to aki 1");
+
             if (parser.title) {
                 try {
                     const titleRegex = new RegExp(parser.title, 'i');
@@ -458,6 +462,8 @@ ${truncatedHtml}
                     this.logger.error(`Error with title regex in parser ${parser.id}: ${error instanceof Error ? error.message : String(error)}`);
                 }
             }
+
+            console.log("to aki 2");
 
             if (parser.content) {
                 try {
@@ -473,18 +479,7 @@ ${truncatedHtml}
                 }
             }
 
-            if (parser.category) {
-                try {
-                    const categoryRegex = new RegExp(parser.category, 'i');
-                    const categoryMatch = html.match(categoryRegex);
-                    if (categoryMatch && categoryMatch[1]) {
-                        result.category = categoryMatch[1].trim();
-                        confidenceScore += 20;
-                    }
-                } catch (error) {
-                    this.logger.error(`Error with category regex in parser ${parser.id}: ${error instanceof Error ? error.message : String(error)}`);
-                }
-            }
+            console.log("to aki 4");
 
             if (parser.featureImage) {
                 try {
@@ -500,6 +495,8 @@ ${truncatedHtml}
                 }
             }
 
+            console.log("to aki 5");
+
             if (!parser.featureImage || !result.featureImage) {
                 const imgRegexDefault = /<meta property="og:image" content="(.*?)" \/>/i;
                 const imgRegexFallback = /<img\s+[^>]*src=["']([^"']+)["'][^>]*>/i;
@@ -511,6 +508,8 @@ ${truncatedHtml}
                     confidenceScore += 10;
                 }
             }
+
+            console.log("to aki 6");
 
             if (parser.tags) {
                 try {
@@ -525,6 +524,8 @@ ${truncatedHtml}
                 }
             }
 
+            console.log("to aki 7");
+
             const pubDateRegex = /<meta\s+property=["']article:published_time["']\s+content=["']([^"']+)["']/i;
             const pubDateMatch = html.match(pubDateRegex);
             if (pubDateMatch && pubDateMatch[1]) {
@@ -535,6 +536,10 @@ ${truncatedHtml}
                     result.pubDate = new Date();
                 }
             }
+
+            console.log("to aki 8");
+
+            console.log(result);
 
             result.confidence = confidenceScore;
 
