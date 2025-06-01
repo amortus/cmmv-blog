@@ -17,7 +17,7 @@
 
                 <!-- Initial loading state -->
                 <div v-if="loading && posts.length === 0" class="flex justify-center items-center py-20">
-                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0a5d28]"></div>
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#001E62]"></div>
                 </div>
 
                                 <!-- Posts List -->
@@ -32,7 +32,7 @@
 
                                         <!-- Post Title -->
                         <h2 class="text-2xl font-bold text-neutral-900 mb-3">
-                            <a :href="`/post/${post.slug}`" class="hover:text-[#0a5d28] transition-colors" aria-label="Ler mais sobre este post">
+                            <a :href="`/post/${post.slug}`" class="hover:text-[#001E62] transition-colors" aria-label="Ler mais sobre este post">
                                                 {{ post.title }}
                                             </a>
                                         </h2>
@@ -66,7 +66,7 @@
                                         <!-- Read More Button -->
                                         <div class="mt-4">
                                             <a :href="`/post/${post.slug}`"
-                            class="inline-flex items-center text-[#0a5d28] font-medium hover:text-[#064019] transition-colors">
+                            class="inline-flex items-center text-[#001E62] font-medium hover:text-[#00378F] transition-colors">
                                 Ler mais
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -84,7 +84,7 @@
 
                 <!-- Loading more indicator -->
                 <div v-if="loadingMore" class="mt-8 flex justify-center items-center py-6">
-                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0a5d28]"></div>
+                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#001E62]"></div>
                         </div>
 
                 <!-- Intersection observer target -->
@@ -244,10 +244,10 @@ onUnmounted(() => {
 }
 
 .post-content :deep(blockquote) {
-    border-left: 4px solid #0a5d28;
+    border-left: 4px solid #001E62;
     padding-left: 1rem;
     margin: 1rem 0;
-    color: #666;
+    color: #001E62;
 }
 
 .post-content :deep(h2),
@@ -275,11 +275,11 @@ onUnmounted(() => {
 }
 
 .post-content :deep(a) {
-    color: #0a5d28;
+    color: #001E62;
     text-decoration: underline;
 }
 
 .post-content :deep(a:hover) {
-    color: #064019;
+    color: #00378F;
 }
 </style>

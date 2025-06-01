@@ -111,7 +111,7 @@
                                                 <img v-if="author.image" :src="author.image" :alt="author.name"
                                                     class="w-full h-full object-cover" width="44" height="44" />
                                                 <div v-else
-                                                    class="w-full h-full flex items-center justify-center bg-[#0a5d28] text-white font-bold text-lg">
+                                                    class="w-full h-full flex items-center justify-center bg-[#001E62] text-white font-bold text-lg">
                                                     {{ authorInitials }}
                                                 </div>
                                             </div>

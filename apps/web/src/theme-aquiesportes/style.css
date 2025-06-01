@@ -13,11 +13,11 @@
 }
 
 .article-container {
-    padding-bottom: 0px;
+    padding-bottom: 20px;
 }
 
 .post-header {
-    margin-bottom: 0px;
+    margin-bottom: 20px;
 }
 
 .post-title {
@@ -390,4 +390,33 @@ iframe {
     background-size: contain;
     background-repeat: no-repeat;
     opacity: 0.2;
+}
+
+/* Spacing for ad sections */
+.ad-container {
+    margin: 2rem 0;
+}
+
+.ad-placeholder {
+    margin: 2rem 0;
+}
+
+/* Section spacing */
+section {
+    margin-bottom: 2.5rem;
+}
+
+h2.text-xl.font-bold.mb-6 {
+    margin-top: 2rem;
+}
+
+/* Mais Conteúdo section spacing */
+h2.text-xl.font-bold.mb-6.pb-2.text-\[\#001E62\].border-b-2.border-\[\#ffcc00\] {
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Newsletter section spacing */
+section.bg-\[\#001E62\].py-10.text-white.mt-8 {
+    margin-top: 3rem;
 }

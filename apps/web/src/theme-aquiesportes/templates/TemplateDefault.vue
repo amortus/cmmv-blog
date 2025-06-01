@@ -178,45 +178,6 @@
             </div>
         </main>
 
-        <!-- Mais Populares Section -->
-        <section v-if="popularPosts && popularPosts.length > 0" class="bg-gray-100 py-6 mt-6">
-            <div class="max-w-[1200px] mx-auto px-4">
-                <h2 class="text-xl font-bold mb-6 pb-2 text-[#0a5d28] border-b-2 border-[#ffcc00]">
-                    Mais Populares
-                </h2>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    <div v-for="(post, index) in popularPosts" :key="post.id" class="flex flex-col">
-                        <a :href="`/post/${post.slug}`" class="block rounded-md overflow-hidden mb-2">
-                            <div class="relative">
-                                <img
-                                    v-if="post.image"
-                                    :src="post.image"
-                                    :alt="post.title"
-                                    class="w-full h-44 object-cover"
-                                />
-                                <div v-else class="w-full h-44 bg-gray-200 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </a>
-                        <a :href="`/post/${post.slug}`" class="block mb-1">
-                            <h3 class="text-base font-bold text-gray-800 hover:text-[#0a5d28] hover:underline leading-tight">
-                                {{ post.title }}
-                            </h3>
-                        </a>
-                        <div v-if="post.categories && post.categories.length > 0" class="mt-1">
-                            <span class="bg-[#ffcc00] text-[#333] px-2 py-0.5 rounded-md text-xs font-medium">
-                                {{ post.categories[0].name }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Newsletter Section -->
         <section class="bg-[#001E62] py-10 text-white mt-8">
             <div class="max-w-[1200px] mx-auto px-4">
@@ -231,7 +192,7 @@
                     <div class="md:w-1/2 w-full">
                         <form class="flex w-full">
                             <input type="email" placeholder="Seu email"
-                                class="flex-grow px-4 py-3 rounded-l-md border-0 bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#ffcc00]">
+                                class="flex-grow px-4 py-3 rounded-l-md border-0 bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#001E62]">
                             <button type="submit" class="bg-[#ffcc00] text-[#333333] font-medium px-6 py-3 rounded-r-md hover:bg-[#ffa500] transition-colors whitespace-nowrap">
                                 Assinar
                             </button>
@@ -338,7 +299,7 @@
                                         type="search"
                                         v-model="searchQuery"
                                         @input="debouncedSearch"
-                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5 focus:ring-[#0a5d28] focus:border-[#0a5d28]"
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2.5 focus:ring-[#001E62] focus:border-[#001E62]"
                                         placeholder="Pesquisar posts..."
                                         autocomplete="off"
                                         ref="searchInput"
@@ -347,7 +308,7 @@
 
                                 <div class="mt-4 max-h-[70vh] overflow-y-auto">
                                     <div v-if="isSearching" class="flex justify-center items-center py-8">
-                                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0a5d28]"></div>
+                                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#001E62]"></div>
                                     </div>
 
                                     <div v-else-if="searchResults.length === 0 && searchQuery.length > 1" class="py-8 text-center text-gray-600">
@@ -588,6 +549,33 @@ const categoriesColumns = computed(() => {
     ];
 });
 
+// Variáveis para o carrossel de posts populares
+const currentPage = ref(0);
+const groupedPopularPosts = ref<any[][]>([]);
+
+// Funções de controle do carrossel
+const nextPage = () => {
+    currentPage.value = (currentPage.value + 1) % groupedPopularPosts.value.length;
+};
+
+const prevPage = () => {
+    currentPage.value = (currentPage.value - 1 + groupedPopularPosts.value.length) % groupedPopularPosts.value.length;
+};
+
+const goToPage = (index: number) => {
+    currentPage.value = index;
+};
+
+// Função para agrupar posts em grupos de 4
+const groupPosts = (posts: any[]) => {
+    const groups = [];
+    const postsPerPage = 4;
+    for (let i = 0; i < posts.length; i += postsPerPage) {
+        groups.push(posts.slice(i, i + postsPerPage));
+    }
+    return groups;
+};
+
 onMounted(async () => {
     await Promise.all([
         (async () => {
@@ -613,17 +601,29 @@ onMounted(async () => {
                         return dateB - dateA; // Ordem decrescente (mais recentes primeiro)
                     });
                     
-                    // Garante que tenhamos 9 posts
+                    // Limita para 12 posts
                     let finalPosts = [...sortedPosts];
-                    if (finalPosts.length < 9) {
-                        const postsNeeded = 9 - finalPosts.length;
+                    if (finalPosts.length < 12) {
+                        const postsNeeded = 12 - finalPosts.length;
                         for (let i = 0; i < postsNeeded; i++) {
                             // Usa o operador de módulo para ciclar pelos posts disponíveis
                             finalPosts.push({...finalPosts[i % finalPosts.length]});
                         }
+                    } else {
+                        finalPosts = finalPosts.slice(0, 12);
                     }
                     
-                    popularPosts.value = finalPosts.slice(0, 9); // Limitando para 9 posts populares
+                    // Garantir que todos os posts tenham a propriedade featureImage definida
+                    finalPosts = finalPosts.map(post => {
+                        if (!post.featureImage) {
+                            post.featureImage = post.feature_image || post.image || post.coverImage || post.cover_image;
+                        }
+                        return post;
+                    });
+                    
+                    // Agrupar os posts em conjuntos de 4
+                    groupedPopularPosts.value = groupPosts(finalPosts);
+                    popularPosts.value = finalPosts;
                 }
             } catch (err) {
                 console.error('Failed to load popular posts:', err);
