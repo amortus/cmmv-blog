@@ -19,6 +19,9 @@
                                     @click="(e) => toggleDropdown(category.id, e)"
                                     class="dropdown-toggle text-white hover:bg-[#00378F] dark:hover:bg-[#001E62] hover:text-[#ffcc00] px-3 py-2 rounded text-lg flex items-center whitespace-nowrap transition-colors"
                                     :class="{'bg-[#00378F] text-[#ffcc00]': openDropdowns[category.id]}"
+                                    :aria-label="`Menu ${category.name}`"
+                                    aria-haspopup="true"
+                                    :aria-expanded="openDropdowns[category.id] ? 'true' : 'false'"
                                 >
                                     {{ category.name }}
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -122,6 +125,9 @@
                                     @click="(e) => toggleDropdown(category.id, e)"
                                     class="dropdown-toggle flex items-center justify-between w-full text-white hover:bg-[#00378F] dark:hover:bg-[#001E62] hover:text-[#ffcc00] rounded px-3 py-2 text-lg"
                                     :class="{'bg-[#00378F] text-[#ffcc00]': openDropdowns[category.id]}"
+                                    :aria-label="`Menu ${category.name}`"
+                                    aria-haspopup="true"
+                                    :aria-expanded="openDropdowns[category.id] ? 'true' : 'false'"
                                 >
                                     {{ category.name }}
                                     <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -337,7 +343,7 @@
                                                     <p v-if="post.excerpt" class="text-sm text-gray-600 line-clamp-2">
                                                         {{ post.excerpt }}
                                                     </p>
-                                                    <div class="mt-2 text-xs text-gray-500 flex items-center">
+                                                    <div class="mt-2 text-xs text-gray-700 flex items-center">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>

@@ -265,7 +265,7 @@
                                                         <p class="text-gray-600 text-sm mb-3 line-clamp-2">
                                                             {{ relatedPost.excerpt || stripHtml(relatedPost.content).substring(0, 120) + '...' }}
                                                         </p>
-                                                        <div class="flex justify-between items-center text-xs text-gray-500">
+                                                        <div class="flex justify-between items-center text-xs text-gray-700">
                                                             <span v-if="getAuthor(relatedPost)">Por {{ getAuthor(relatedPost).name }}</span>
                                                             <span>{{ formatDate(relatedPost.publishedAt || relatedPost.updatedAt) }}</span>
                                                         </div>

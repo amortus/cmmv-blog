@@ -107,7 +107,7 @@
                                 </div>
                                 <div>
                                     <p class="font-medium text-neutral-900">{{ author.name }}</p>
-                                    <p class="text-xs text-neutral-500">{{ formatDate(post.publishedAt || post.createdAt) }}</p>
+                                    <p class="text-xs text-neutral-700">{{ formatDate(post.publishedAt || post.createdAt) }}</p>
                                 </div>
                             </div>
 

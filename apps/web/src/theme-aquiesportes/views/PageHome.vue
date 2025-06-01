@@ -105,14 +105,14 @@
 
                         <!-- Carousel Controls -->
                         <div class="absolute top-0 bottom-0 left-0 flex items-center">
-                            <button @click="prevCarouselSlide" class="bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10">
+                            <button @click="prevCarouselSlide" class="bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10" aria-label="Slide anterior">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
                         </div>
                         <div class="absolute top-0 bottom-0 right-0 flex items-center">
-                            <button @click="nextCarouselSlide" class="bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10">
+                            <button @click="nextCarouselSlide" class="bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10" aria-label="Próximo slide">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
@@ -127,6 +127,7 @@
                                 @click="currentCarouselIndex = index"
                                 class="w-3 h-3 rounded-full bg-white/50 focus:outline-none"
                                 :class="{ 'bg-white': currentCarouselIndex === index }"
+                                :aria-label="`Ir para slide ${index + 1}`"
                             ></button>
                         </div>
                     </div>
@@ -257,8 +258,94 @@
                 </div>
             </div>
 
-            <!-- Mais Populares Section -->
-            <section v-if="popularPosts && popularPosts.length > 0" class="mb-8">
+            <!-- Main Content Layout -->
+            <div class="flex flex-col lg:flex-row gap-8">
+
+                <!-- Main Content Area -->
+                <div class="flex-grow">
+                    <!-- Título principal que abrange toda a largura -->
+                    <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
+                        Últimas Notícias
+                    </h2>
+                    
+                    <!-- Main Content em um único grid de 3 colunas -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <article
+                            v-for="post in posts.slice(featuredPost ? 1 : 0, featuredPost ? 7 : 6)"
+                            :key="post.id"
+                            class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
+                        >
+                            <a :href="`/post/${post.slug}`" class="block">
+                                <div class="h-48 overflow-hidden relative">
+                                    <img
+                                        v-if="post.featureImage"
+                                        :src="post.featureImage"
+                                        :alt="post.title"
+                                        class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                    />
+                                    <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                        <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                            {{ post.categories[0].name }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="p-4">
+                                <a :href="`/post/${post.slug}`" class="block">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
+                                        {{ post.title }}
+                                    </h3>
+                                </a>
+                                <div class="flex justify-between items-center text-xs text-gray-700">
+                                    <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                    <span>{{ formatDate(post.publishedAt) }}</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Mid-content AdSense Banner -->
+                        <div v-if="adSettings.enableAds" class="w-full bg-gray-100 rounded-lg my-8 overflow-hidden flex justify-center lg:col-span-3">
+                            <div class="ad-container ad-banner-mid py-2 px-4" v-if="getAdHtml('inContent')">
+                                <div v-html="getAdHtml('inContent')"></div>
+                            </div>
+                            <div class="ad-container ad-banner-mid py-2 px-4" v-else>
+                                <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                                    <span>Anúncio</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom AdSense Banner -->
+                    <div v-if="adSettings.enableAds && adSettings.homePageAfterPosts" class="w-full bg-gray-100 rounded-lg mt-8 mb-4 overflow-hidden flex justify-center lg:col-span-3">
+                        <div class="ad-container ad-banner-bottom py-2 px-4" v-if="getAdHtml('belowContent')">
+                            <div v-html="getAdHtml('belowContent')"></div>
+                        </div>
+                        <div class="ad-container ad-banner-bottom py-2 px-4" v-else>
+                            <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                                <span>Anúncio</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading More Indicator -->
+                    <div v-if="loadingMore" class="mt-8 flex justify-center items-center py-6">
+                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#001E62]"></div>
+                        <span class="ml-3 text-gray-600">Carregando mais posts...</span>
+                    </div>
+
+                    <!-- Infinite Scroll Observer Target -->
+                    <div ref="observerTarget" class="h-4 w-full"></div>
+                </div>
+            </div>
+            
+            <!-- Mais Populares Section (Movida para depois de Últimas Notícias) -->
+            <section v-if="popularPosts && popularPosts.length > 0" class="mb-8 mt-8">
                 <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                     Mais Populares
                 </h2>
@@ -307,12 +394,12 @@
                     </div>
 
                     <!-- Controles do carrossel -->
-                    <button @click="prevPopularPage" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10">
+                    <button @click="prevPopularPage" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10" aria-label="Posts populares anteriores">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button @click="nextPopularPage" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10">
+                    <button @click="nextPopularPage" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10" aria-label="Próximos posts populares">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -326,96 +413,11 @@
                             @click="goToPopularPage(index)"
                             class="w-3 h-3 rounded-full focus:outline-none transition-colors"
                             :class="{ 'bg-[#001E62]': currentPopularPage === index, 'bg-gray-300': currentPopularPage !== index }"
+                            :aria-label="`Ir para página ${index + 1} de posts populares`"
                         ></button>
                     </div>
                 </div>
             </section>
-
-            <!-- Main Content Layout -->
-            <div class="flex flex-col lg:flex-row gap-8">
-
-                <!-- Main Content Area -->
-                <div class="flex-grow">
-                    <!-- Título principal que abrange toda a largura -->
-                    <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
-                        Últimas Notícias
-                    </h2>
-                    
-                    <!-- Main Content em um único grid de 3 colunas -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <article
-                            v-for="post in posts.slice(featuredPost ? 1 : 0, featuredPost ? 7 : 6)"
-                            :key="post.id"
-                            class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
-                        >
-                            <a :href="`/post/${post.slug}`" class="block">
-                                <div class="h-48 overflow-hidden relative">
-                                    <img
-                                        v-if="post.featureImage"
-                                        :src="post.featureImage"
-                                        :alt="post.title"
-                                        class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                                    />
-                                    <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
-                                        <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
-                                            {{ post.categories[0].name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="p-4">
-                                <a :href="`/post/${post.slug}`" class="block">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
-                                        {{ post.title }}
-                                    </h3>
-                                </a>
-                                <div class="flex justify-between items-center text-xs text-gray-500">
-                                    <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
-                                    <span>{{ formatDate(post.publishedAt) }}</span>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Mid-content AdSense Banner -->
-                        <div v-if="adSettings.enableAds" class="w-full bg-gray-100 rounded-lg my-8 overflow-hidden flex justify-center lg:col-span-3">
-                            <div class="ad-container ad-banner-mid py-2 px-4" v-if="getAdHtml('inContent')">
-                                <div v-html="getAdHtml('inContent')"></div>
-                            </div>
-                            <div class="ad-container ad-banner-mid py-2 px-4" v-else>
-                                <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                                    <span>Anúncio</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bottom AdSense Banner -->
-                    <div v-if="adSettings.enableAds && adSettings.homePageAfterPosts" class="w-full bg-gray-100 rounded-lg mt-8 mb-4 overflow-hidden flex justify-center lg:col-span-3">
-                        <div class="ad-container ad-banner-bottom py-2 px-4" v-if="getAdHtml('belowContent')">
-                            <div v-html="getAdHtml('belowContent')"></div>
-                        </div>
-                        <div class="ad-container ad-banner-bottom py-2 px-4" v-else>
-                            <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                                <span>Anúncio</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Loading More Indicator -->
-                    <div v-if="loadingMore" class="mt-8 flex justify-center items-center py-6">
-                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#001E62]"></div>
-                        <span class="ml-3 text-gray-600">Carregando mais posts...</span>
-                    </div>
-
-                    <!-- Infinite Scroll Observer Target -->
-                    <div ref="observerTarget" class="h-4 w-full"></div>
-                </div>
-            </div>
             
             <!-- Seção Mais Conteúdo -->
             <div v-if="posts.length > (featuredPost ? 7 : 6)" class="flex-grow mt-8">
@@ -459,7 +461,7 @@
                                         {{ post.title }}
                                     </h3>
                                 </a>
-                                <div class="flex justify-between items-center text-xs text-gray-500">
+                                <div class="flex justify-between items-center text-xs text-gray-700">
                                     <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
                                     <span>{{ formatDate(post.publishedAt) }}</span>
                                 </div>
@@ -485,6 +487,7 @@
                             @click="prevMoreContentPage" 
                             class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             :disabled="currentMoreContentPage === 0"
+                            aria-label="Página anterior de conteúdo"
                         >
                             Anterior
                         </button>
@@ -495,6 +498,7 @@
                                 @click="goToMoreContentPage(index)"
                                 class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
                                 :class="{ 'bg-[#001E62] text-white': currentMoreContentPage === index, 'bg-gray-200 text-gray-600 hover:bg-gray-300': currentMoreContentPage !== index }"
+                                :aria-label="`Ir para página ${index + 1}`"
                             >
                                 {{ index + 1 }}
                             </button>
@@ -503,6 +507,7 @@
                             @click="nextMoreContentPage" 
                             class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             :disabled="currentMoreContentPage === moreContentPages.length - 1"
+                            aria-label="Próxima página de conteúdo"
                         >
                             Próxima
                         </button>
