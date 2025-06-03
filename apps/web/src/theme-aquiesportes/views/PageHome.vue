@@ -351,80 +351,44 @@
                 </h2>
 
                 <!-- Mensagem de diagnóstico (temporária) -->
-                <div v-if="!popularPosts || popularPosts.length === 0 || !groupedPopularPosts || groupedPopularPosts.length === 0" 
+                <div v-if="!popularPosts || popularPosts.length === 0" 
                      class="p-4 bg-gray-100 rounded-lg text-center mb-4">
-                    <p v-if="!popularPosts">popularPosts não está definido</p>
-                    <p v-else-if="popularPosts.length === 0">popularPosts está vazio</p>
-                    <p v-else-if="!groupedPopularPosts">groupedPopularPosts não está definido</p>
-                    <p v-else-if="groupedPopularPosts.length === 0">groupedPopularPosts está vazio</p>
+                    <p>Nenhum post popular encontrado</p>
                 </div>
 
-                <div v-if="popularPosts && popularPosts.length > 0 && groupedPopularPosts && groupedPopularPosts.length > 0" class="relative px-3">
-                    <!-- Carrossel de posts populares -->
-                    <div class="overflow-hidden">
-                        <div class="flex transition-transform duration-700 ease-in-out" 
-                             :style="{ transform: `translateX(-${currentPopularPage * 100}%)` }">
-                            <div v-for="(group, groupIndex) in groupedPopularPosts" :key="groupIndex" class="w-full flex-shrink-0 flex flex-wrap">
-                                <div v-for="post in group" :key="post.id" 
-                                     class="w-full sm:w-1/2 md:w-1/3 px-2 py-2">
-                                    <div class="flex flex-col h-full rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                                        <a :href="`/post/${post.slug}`" class="block rounded-t-md overflow-hidden">
-                                            <div class="relative h-40">
-                                                <OptimizedImage
-                                                    v-if="post.featureImage"
-                                                    :src="post.featureImage"
-                                                    :alt="post.title"
-                                                    class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                                                    width="320"
-                                                    height="160"
-                                                />
-                                                <div v-else class="w-full h-40 bg-gray-200 flex items-center justify-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <div class="p-4 flex-grow">
-                                            <a :href="`/post/${post.slug}`" class="block mb-1">
-                                                <h3 class="text-sm font-bold text-gray-800 hover:text-[#001E62] hover:underline leading-tight">
-                                                    {{ post.title }}
-                                                </h3>
-                                            </a>
-                                            <div v-if="post.categories && post.categories.length > 0" class="mt-1">
-                                                <span class="bg-[#ffcc00] text-[#333] px-2 py-0.5 rounded-md text-xs font-medium">
-                                                    {{ post.categories[0].name }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                <!-- Grid estático de posts populares -->
+                <div v-if="popularPosts && popularPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div v-for="post in popularPosts.slice(0, 6)" :key="post.id" 
+                         class="flex flex-col h-full rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                        <a :href="`/post/${post.slug}`" class="block rounded-t-md overflow-hidden">
+                            <div class="relative h-40">
+                                <OptimizedImage
+                                    v-if="post.featureImage"
+                                    :src="post.featureImage"
+                                    :alt="post.title"
+                                    class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                    width="320"
+                                    height="160"
+                                />
+                                <div v-else class="w-full h-40 bg-gray-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
                                 </div>
                             </div>
+                        </a>
+                        <div class="p-4 flex-grow">
+                            <a :href="`/post/${post.slug}`" class="block mb-1">
+                                <h3 class="text-sm font-bold text-gray-800 hover:text-[#001E62] hover:underline leading-tight">
+                                    {{ post.title }}
+                                </h3>
+                            </a>
+                            <div v-if="post.categories && post.categories.length > 0" class="mt-1">
+                                <span class="bg-[#ffcc00] text-[#333] px-2 py-0.5 rounded-md text-xs font-medium">
+                                    {{ post.categories[0].name }}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Controles do carrossel -->
-                    <button v-if="groupedPopularPosts.length > 1" @click="prevPopularPage" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10" aria-label="Posts populares anteriores">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <button v-if="groupedPopularPosts.length > 1" @click="nextPopularPage" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10" aria-label="Próximos posts populares">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-
-                    <!-- Indicadores do carrossel -->
-                    <div v-if="groupedPopularPosts.length > 1" class="flex justify-center mt-4 space-x-2">
-                        <button
-                            v-for="(_, index) in groupedPopularPosts.length"
-                            :key="index"
-                            @click="goToPopularPage(index)"
-                            class="w-3 h-3 rounded-full focus:outline-none transition-colors"
-                            :class="{ 'bg-[#001E62]': currentPopularPage === index, 'bg-gray-300': currentPopularPage !== index }"
-                            :aria-label="`Ir para página ${index + 1} de posts populares`"
-                        ></button>
                     </div>
                 </div>
             </section>
@@ -494,40 +458,42 @@
                     </div>
 
                     <!-- Controles de paginação -->
-                    <div class="flex justify-center mt-8 space-x-2">
-                        <button 
-                            @click="prevMoreContentPage" 
-                            class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            :disabled="currentMoreContentPage === 0"
-                            aria-label="Página anterior de conteúdo"
-                        >
-                            Anterior
-                        </button>
-                        <div class="flex items-center mx-4 space-x-2">
-                            <button
-                                v-for="pageIndex in visiblePageNumbers"
-                                :key="pageIndex"
-                                @click="pageIndex >= 0 ? goToMoreContentPage(pageIndex) : null"
-                                class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                                :class="{ 
-                                    'bg-[#001E62] text-white': currentMoreContentPage === pageIndex, 
-                                    'bg-gray-200 text-gray-600 hover:bg-gray-300': currentMoreContentPage !== pageIndex && pageIndex >= 0,
-                                    'bg-transparent cursor-default': pageIndex < 0
-                                }"
-                                :aria-label="pageIndex >= 0 ? `Ir para página ${pageIndex + 1}` : 'Páginas omitidas'"
+                    <div class="flex justify-center mt-8 w-full overflow-x-auto px-2">
+                        <div class="flex items-center space-x-2 min-w-min">
+                            <button 
+                                @click="prevMoreContentPage" 
+                                class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                                :disabled="currentMoreContentPage === 0"
+                                aria-label="Página anterior de conteúdo"
                             >
-                                <span v-if="pageIndex >= 0">{{ pageIndex + 1 }}</span>
-                                <span v-else>...</span>
+                                Anterior
+                            </button>
+                            <div class="flex items-center space-x-2">
+                                <button
+                                    v-for="pageIndex in visiblePageNumbers"
+                                    :key="pageIndex"
+                                    @click="pageIndex >= 0 ? goToMoreContentPage(pageIndex) : null"
+                                    class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                                    :class="{ 
+                                        'bg-[#001E62] text-white': currentMoreContentPage === pageIndex, 
+                                        'bg-gray-200 text-gray-600 hover:bg-gray-300': currentMoreContentPage !== pageIndex && pageIndex >= 0,
+                                        'bg-transparent cursor-default': pageIndex < 0
+                                    }"
+                                    :aria-label="pageIndex >= 0 ? `Ir para página ${pageIndex + 1}` : 'Páginas omitidas'"
+                                >
+                                    <span v-if="pageIndex >= 0">{{ pageIndex + 1 }}</span>
+                                    <span v-else>...</span>
+                                </button>
+                            </div>
+                            <button 
+                                @click="nextMoreContentPage" 
+                                class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                                :disabled="currentMoreContentPage === moreContentPages.length - 1"
+                                aria-label="Próxima página de conteúdo"
+                            >
+                                Próxima
                             </button>
                         </div>
-                        <button 
-                            @click="nextMoreContentPage" 
-                            class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            :disabled="currentMoreContentPage === moreContentPages.length - 1"
-                            aria-label="Próxima página de conteúdo"
-                        >
-                            Próxima
-                        </button>
                     </div>
                 </div>
             </div>
@@ -1034,18 +1000,15 @@ const currentMoreContentPosts = computed(() => {
 
 // Funções para o carrossel de posts populares
 const nextPopularPage = () => {
-    stopCarouselInterval(); // Parar o intervalo automático quando o usuário interage
-    currentPopularPage.value = (currentPopularPage.value + 1) % groupedPopularPosts.value.length;
+    // Função mantida para compatibilidade, mas não faz nada
 };
 
 const prevPopularPage = () => {
-    stopCarouselInterval(); // Parar o intervalo automático quando o usuário interage
-    currentPopularPage.value = (currentPopularPage.value - 1 + groupedPopularPosts.value.length) % groupedPopularPosts.value.length;
+    // Função mantida para compatibilidade, mas não faz nada
 };
 
 const goToPopularPage = (index: number) => {
-    stopCarouselInterval(); // Parar o intervalo automático quando o usuário interage
-    currentPopularPage.value = index;
+    // Função mantida para compatibilidade, mas não faz nada
 };
 
 // Funções para navegação da seção Mais Conteúdo
@@ -1114,8 +1077,12 @@ const visiblePageNumbers = computed(() => {
     // Mostrar sempre a primeira e a última página, e algumas ao redor da atual
     let pages = [0]; // Primeira página (índice 0)
     
-    // Determinar intervalo ao redor da página atual
-    const offset = 2; // Quantas páginas mostrar antes/depois da atual
+    // Adaptar o número de botões com base no tamanho da tela
+    const screenWidth = window.innerWidth;
+    // Menos botões em telas menores
+    const offset = screenWidth < 640 ? 1 : 
+                  screenWidth < 768 ? 1 : 2;
+    
     let startPage = Math.max(1, current - offset);
     let endPage = Math.min(totalPages - 2, current + offset);
     
@@ -1151,6 +1118,29 @@ const visiblePageNumbers = computed(() => {
     
     return pages;
 });
+
+// Detectar mudanças no tamanho da janela para ajustar a paginação
+onMounted(() => {
+    // ... código existente ...
+    
+    // Adicionar listener para mudanças no tamanho da janela
+    window.addEventListener('resize', handleWindowResize);
+});
+
+onUnmounted(() => {
+    // ... código existente ...
+    
+    // Remover listener ao desmontar o componente
+    window.removeEventListener('resize', handleWindowResize);
+});
+
+// Função para lidar com redimensionamento da janela
+const handleWindowResize = () => {
+    // Forçar recálculo do visiblePageNumbers
+    setTimeout(() => {
+        currentMoreContentPage.value = currentMoreContentPage.value;
+    }, 100);
+};
 </script>
 
 <style scoped>
