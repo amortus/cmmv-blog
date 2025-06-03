@@ -458,22 +458,22 @@
                     </div>
 
                     <!-- Controles de paginação -->
-                    <div class="flex justify-center mt-8 w-full overflow-x-auto px-2">
-                        <div class="flex items-center space-x-2 min-w-min">
+                    <div class="flex justify-center mt-8 w-full overflow-x-auto pb-4">
+                        <div class="flex items-center space-x-2 px-4 min-w-fit">
                             <button 
                                 @click="prevMoreContentPage" 
-                                class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                                class="bg-[#001E62] text-white px-3 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap text-sm sm:text-base sm:px-4"
                                 :disabled="currentMoreContentPage === 0"
                                 aria-label="Página anterior de conteúdo"
                             >
                                 Anterior
                             </button>
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-1 sm:space-x-2 overflow-visible">
                                 <button
                                     v-for="pageIndex in visiblePageNumbers"
                                     :key="pageIndex"
                                     @click="pageIndex >= 0 ? goToMoreContentPage(pageIndex) : null"
-                                    class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                                    class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors text-sm sm:text-base"
                                     :class="{ 
                                         'bg-[#001E62] text-white': currentMoreContentPage === pageIndex, 
                                         'bg-gray-200 text-gray-600 hover:bg-gray-300': currentMoreContentPage !== pageIndex && pageIndex >= 0,
@@ -487,11 +487,11 @@
                             </div>
                             <button 
                                 @click="nextMoreContentPage" 
-                                class="bg-[#001E62] text-white px-4 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                                :disabled="currentMoreContentPage === moreContentPages.length - 1"
+                                class="bg-[#001E62] text-white px-3 py-2 rounded-md hover:bg-[#00378F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap text-sm sm:text-base sm:px-4"
+                                :disabled="currentMoreContentPage >= moreContentPages.length - 1"
                                 aria-label="Próxima página de conteúdo"
                             >
-                                Próxima
+                                Próximo
                             </button>
                         </div>
                     </div>

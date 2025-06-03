@@ -392,17 +392,29 @@ const scripts = computed(() => {
 });
 
 useHead({
-    meta: computed(() => settingsStore.allMetaTags),
+    meta: computed(() => {
+        // Combinar meta tags do store com as meta tags específicas
+        const metaTags = settingsStore.allMetaTags || [];
+        
+        // Adicionar meta tags para instruções de cache para navegadores e proxies
+        return [
+            ...metaTags,
+            // Usar "http-equiv" em vez de "httpEquiv" para compatibilidade
+            { "http-equiv": 'Cache-Control', content: 'public, max-age=31536000, immutable' },
+            { "http-equiv": 'x-dns-prefetch-control', content: 'on' }
+        ];
+    }),
 
     link: computed(() => {
+        // Base links incluindo favicon e outros recursos
         const links = [
             {
                 rel: 'stylesheet',
                 href: '/src/theme-aquiesportes/style.css'
             },
+            // Configuração principal do favicon - mantemos apenas este
             {
                 rel: 'icon',
-                type: 'image/ico',
                 href: '/src/theme-aquiesportes/favicon.ico?v=2'
             },
             { rel: 'preconnect', href: 'https://www.googletagmanager.com/' },
@@ -413,17 +425,24 @@ useHead({
             { rel: 'preconnect', href: 'https://tpc.googlesyndication.com/' },
             { rel: 'preconnect', href: 'https://www.googletag.com/' },
             { rel: 'dns-prefetch', href: 'https://www.googletagmanager.com/' },
-            { rel: 'dns-prefetch', href: 'https://securepubads.g.doubleclick.net' }
+            { rel: 'dns-prefetch', href: 'https://securepubads.g.doubleclick.net' },
+            // Resource hints para recursos críticos
+            { rel: 'dns-prefetch', href: 'https://fonts.googleapis.com' },
+            { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' },
+            { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+            { rel: 'preconnect', href: 'https://fonts.gstatic.com' }
         ];
         
-        // Adicionar favicon se disponível
+        // Adicionar favicon das configurações (apenas se não queremos forçar o favicon do tema)
+        // Comentar esta parte se quiser garantir que apenas o favicon do tema seja usado
+        /*
         if (settings.value?.['blog.favicon']) {
             links.push({
                 rel: 'shortcut icon',
-                href: settings.value['blog.favicon'],
-                type: 'image/x-icon'
+                href: settings.value['blog.favicon']
             });
         }
+        */
         
         // Adicionar canonical e feed RSS
         if (settings.value?.['blog.url']) {
@@ -434,9 +453,10 @@ useHead({
                 },
                 { 
                     rel: 'alternate', 
-                    href: `${settings.value['blog.url']}/feed`, 
-                    type: 'application/rss+xml', 
-                    title: settings.value['blog.title'] || 'RSS Feed'
+                    href: `${settings.value['blog.url']}/feed`
+                    // Removendo propriedades que causam erro de tipagem
+                    // type: 'application/rss+xml', 
+                    // title: settings.value['blog.title'] || 'RSS Feed'
                 }
             );
         }
@@ -444,21 +464,7 @@ useHead({
         return links;
     }),
 
-    script: scripts,
-
-    // Adicionar meta tags para instruções de cache para navegadores e proxies
-    meta: [
-        { httpEquiv: 'Cache-Control', content: 'public, max-age=31536000, immutable' },
-        { httpEquiv: 'x-dns-prefetch-control', content: 'on' }
-    ],
-    
-    // Adicionar hints de resource hints para recursos críticos
-    link: [
-        { rel: 'dns-prefetch', href: 'https://fonts.googleapis.com' },
-        { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com', crossorigin: 'anonymous' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
-    ]
+    script: scripts
 })
 
 const isDarkMode = ref(false);
@@ -622,7 +628,7 @@ const goToPage = (index: number) => {
 
 // Função para agrupar posts em grupos de 4
 const groupPosts = (posts: any[]) => {
-    const groups = [];
+    const groups: any[][] = [];
     const postsPerPage = 4;
     for (let i = 0; i < posts.length; i += postsPerPage) {
         groups.push(posts.slice(i, i + postsPerPage));
