@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import { useScriptLoader } from '../theme-aquiesportes/composables/useScriptLoader';
 
 declare global {
     interface Window {
@@ -15,6 +16,9 @@ const isTruthy = (value: any): boolean => {
 };
 
 export const useAds = (settings: any, page = 'generic') => {
+    // Utilitário para carregamento otimizado de scripts
+    const { loadScript, loadScriptOnInteraction, isScriptLoaded } = useScriptLoader();
+
     const adSettings = computed(() => {
         const rawSettings = settings || {};
         const processedSettings: Record<string, any> = {};
@@ -192,68 +196,134 @@ export const useAds = (settings: any, page = 'generic') => {
         return '';
     };
 
+    // Função otimizada para carregamento de scripts de anúncios
     const loadAdScripts = () => {
-        if (adSettings.value.enableAds) {
-            if (adSettings.value.enableAdSense && adSettings.value.enableAdSenseAutoAds && adSettings.value.adSenseAutoAdsCode) {
-                const existingScript = document.getElementById('adsense-script');
-                if (!existingScript) {
-                    try {
-                        const srcRegex = /src="([^"]+)"/;
-                        const match = adSettings.value.adSenseAutoAdsCode.match(srcRegex);
+        if (!adSettings.value.enableAds) return;
 
-                        if (match && match[1]) {
-                            const scriptSrc = match[1];
-                            const head = document.head;
-                            const script = document.createElement('script');
-                            script.id = 'adsense-script';
-                            script.async = true;
-                            script.src = scriptSrc;
-                            script.crossOrigin = "anonymous";
-                            head.appendChild(script);
+        // Carregar scripts AdSense usando nossa utilidade otimizada
+        if (adSettings.value.enableAdSense && adSettings.value.enableAdSenseAutoAds && adSettings.value.adSenseAutoAdsCode) {
+            try {
+                const srcRegex = /src="([^"]+)"/;
+                const match = adSettings.value.adSenseAutoAdsCode.match(srcRegex);
+
+                if (match && match[1]) {
+                    const scriptSrc = match[1];
+                    
+                    // Usar carregamento tardio - apenas quando o usuário interage com a página
+                    loadScriptOnInteraction(scriptSrc, {
+                        id: 'adsense-script',
+                        async: true,
+                        attrs: {
+                            'crossorigin': 'anonymous',
+                            'data-ad-client': adSettings.value.adSensePublisherId || ''
                         }
-                    } catch (e) {}
+                    });
                 }
+            } catch (e) {
+                console.error('Erro ao carregar script do AdSense:', e);
             }
+        }
 
-            if (adSettings.value.enableAdSense && window.adsbygoogle) {
-                setTimeout(() => {
-                    try {
+        // Inicializar anúncios do AdSense quando disponíveis
+        if (adSettings.value.enableAdSense) {
+            const initAdSense = () => {
+                try {
+                    if (window.adsbygoogle) {
                         document.querySelectorAll('.adsbygoogle').forEach((ad) => {
                             if (!ad.hasAttribute('data-adsbygoogle-status')) {
                                 (window.adsbygoogle = window.adsbygoogle || []).push({});
                             }
                         });
-                    } catch (e) {}
-                }, 300);
+                    }
+                } catch (e) {
+                    console.error('Erro ao inicializar anúncios AdSense:', e);
+                }
+            };
+            
+            // Inicializar após um pequeno atraso para garantir que elementos DOM estão prontos
+            setTimeout(initAdSense, 300);
+            
+            // Também inicializar quando a página estiver totalmente carregada
+            if (document.readyState === 'complete') {
+                initAdSense();
+            } else {
+                window.addEventListener('load', initAdSense, { once: true });
+            }
+        }
+        
+        // Carregamento otimizado para scripts Taboola
+        if (adSettings.value.enableTaboolaAds && adSettings.value.taboolaJsCode) {
+            try {
+                const srcRegex = /src="([^"]+)"/;
+                const match = adSettings.value.taboolaJsCode.match(srcRegex);
+
+                if (match && match[1]) {
+                    const scriptSrc = match[1];
+                    
+                    // Carregar Taboola apenas quando o usuário rolar para a parte inferior da página
+                    const observer = new IntersectionObserver((entries) => {
+                        if (entries[0].isIntersecting && !isScriptLoaded(scriptSrc)) {
+                            loadScript(scriptSrc, { 
+                                async: true,
+                                id: 'taboola-script'
+                            });
+                            observer.disconnect();
+                        }
+                    });
+                    
+                    // Observar um elemento próximo do final da página
+                    const footer = document.querySelector('footer') || document.querySelector('.footer');
+                    if (footer) {
+                        observer.observe(footer);
+                    } else {
+                        // Se não encontrar footer, usar carregamento baseado em interação
+                        loadScriptOnInteraction(scriptSrc, { 
+                            async: true,
+                            id: 'taboola-script'
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao carregar script do Taboola:', e);
             }
         }
     };
 
+    // Função otimizada para carregar anúncios na barra lateral esquerda
     const loadSidebarLeftAd = (containerRef: HTMLElement | null) => {
         if (!adSettings.value.enableAds || !containerRef) return;
 
         if (adSettings.value.adSenseSidebarLeft && containerRef) {
             try {
-                setTimeout(() => {
-                    if (!containerRef)
-                        return;
+                // Usar IntersectionObserver para carregar apenas quando visível
+                const observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = adSettings.value.adSenseSidebarLeft;
 
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = adSettings.value.adSenseSidebarLeft;
+                        const insElement = tempDiv.querySelector('ins');
 
-                    const insElement = tempDiv.querySelector('ins');
+                        if (insElement) {
+                            containerRef.appendChild(insElement);
 
-                    if (insElement && containerRef) {
-                        containerRef.appendChild(insElement);
-
-                        if (window.adsbygoogle) {
-                            try {
-                                window.adsbygoogle.push({});
-                            } catch (e) {}
+                            if (window.adsbygoogle) {
+                                try {
+                                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                                } catch (e) {
+                                    console.error('Erro ao inicializar AdSense na barra lateral:', e);
+                                }
+                            }
                         }
+                        
+                        observer.disconnect();
                     }
-                }, 500);
-            } catch (e) {}
+                }, { threshold: 0.1 });
+                
+                observer.observe(containerRef);
+                
+            } catch (e) {
+                console.error('Erro ao configurar anúncio na barra lateral:', e);
+            }
         }
     };
 

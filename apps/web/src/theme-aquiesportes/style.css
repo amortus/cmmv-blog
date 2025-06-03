@@ -3,6 +3,9 @@
     --text-color: #333333;
     --border-color: #e5e7eb;
     --muted-color: #6b7280;
+    --primary-color: #001E62;
+    --secondary-color: #ffcc00;
+    --transition-speed: 0.3s;
 }
 
 .dark {
@@ -435,6 +438,19 @@ iframe {
         margin-bottom: 0.5rem;
         color: #1f2937;
     }
+
+    img[fetchpriority="high"],
+    img[loading="eager"],
+    picture img[fetchpriority="high"],
+    picture img[loading="eager"] {
+        contain-intrinsic-size: auto 300px;
+    }
+    
+    /* Reduzir o tamanho das imagens em mobile para melhorar performance */
+    .post-content img, 
+    .featured-img {
+        max-height: 300px;
+    }
 }
 
 @media (max-width: 576px) {
@@ -550,4 +566,175 @@ h2.text-xl.font-bold.mb-6.pb-2.text-\[\#001E62\].border-b-2.border-\[\#ffcc00\] 
 /* Newsletter section spacing */
 section.bg-\[\#001E62\].py-10.text-white.mt-8 {
     margin-top: 3rem;
+}
+
+/* Otimizações de performance para imagens */
+img {
+    content-visibility: auto;
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0; /* Cor de placeholder */
+}
+
+/* Placeholder para imagens */
+.image-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    z-index: 1;
+}
+
+/* Animação de fade-in para imagens */
+.fade-in-image {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Layout shift prevention */
+.aspect-ratio-box {
+    position: relative;
+    height: 0;
+    overflow: hidden;
+}
+
+.aspect-ratio-box-16-9 {
+    padding-top: 56.25%;
+}
+
+.aspect-ratio-box-4-3 {
+    padding-top: 75%;
+}
+
+.aspect-ratio-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Otimizações de LCP - Garantir que imagens críticas tenham tratamento especial */
+img[fetchpriority="high"],
+img[loading="eager"],
+picture img[fetchpriority="high"],
+picture img[loading="eager"] {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+}
+
+/* Melhorar renderização de texto */
+body {
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Placeholder para conteúdo de imagem enquanto carrega */
+.image-placeholder {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.6; }
+}
+
+/* Animação suave para carregamento de imagens */
+.fade-in-image {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Evitar layout shift com aspect ratio */
+.aspect-ratio-box {
+    position: relative;
+    height: 0;
+    overflow: hidden;
+}
+
+.aspect-ratio-box-16-9 {
+    padding-top: 56.25%; /* 16:9 */
+}
+
+.aspect-ratio-box-4-3 {
+    padding-top: 75%; /* 4:3 */
+}
+
+.aspect-ratio-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Otimizações de renderização para melhorar desempenho */
+.post-content img, 
+.featured-img, 
+.cover-section img,
+.post-featured-image img {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Usar hardware acceleration para elementos críticos */
+.cover-section, 
+.carousel-container, 
+.popular-posts-container {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Usar CSS Grid para layouts críticos para reduzir a necessidade de JavaScript complexo */
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+/* Adicionar prefetch para hover - ajuda na velocidade de interação */
+.hover-prefetch {
+    transition: transform var(--transition-speed) ease-out;
+}
+
+.hover-prefetch:hover {
+    transform: translateY(-5px);
+}
+
+/* Otimização para dispositivos móveis */
+@media (max-width: 768px) {
+    img[fetchpriority="high"],
+    img[loading="eager"],
+    picture img[fetchpriority="high"],
+    picture img[loading="eager"] {
+        contain-intrinsic-size: auto 300px;
+    }
+    
+    /* Reduzir o tamanho das imagens em mobile para melhorar performance */
+    .post-content img, 
+    .featured-img {
+        max-height: 300px;
+    }
 }

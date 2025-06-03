@@ -366,17 +366,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, watch, onBeforeUnmount, provide } from 'vue';
 import { vue3 } from '@cmmv/blog/client';
 import { useHead } from '@unhead/vue'
 import { useSettingsStore } from '../../store/settings';
 import { useCategoriesStore } from '../../store/categories';
+import { usePostsStore } from '../../store/posts';
+import { useRoute, useRouter } from 'vue-router';
 
 import CookieConsent from '../../components/CookieConsent.vue';
 
-const blogAPI = vue3.useBlog();
-const categoriesStore = useCategoriesStore();
+const route = useRoute();
+const router = useRouter();
 const settingsStore = useSettingsStore();
+const categoriesStore = useCategoriesStore();
+const postsStore = usePostsStore();
+const blogAPI = vue3.useBlog();
 
 const settings = ref<any>(settingsStore.getSettings);
 const popularPosts = ref<any[]>([]);
@@ -389,28 +394,71 @@ const scripts = computed(() => {
 useHead({
     meta: computed(() => settingsStore.allMetaTags),
 
-    link: [
-        {
-            rel: 'stylesheet',
-            href: '/src/theme-aquiesportes/style.css'
-        },
-        {
-            rel: 'icon',
-            type: 'image/ico',
-            href: '/src/theme-aquiesportes/favicon.ico?v=2'
-        },
-        { rel: 'preconnect', href: 'https://www.googletagmanager.com/' },
-        { rel: 'preconnect', href: 'https://www.google-analytics.com/' },
-        { rel: 'preconnect', href: 'https://www.googletag.com/' },
-        { rel: 'preconnect', href: 'https://connect.facebook.net/' },
-        { rel: 'preconnect', href: 'https://securepubads.g.doubleclick.net/' },
-        { rel: 'preconnect', href: 'https://tpc.googlesyndication.com/' },
-        { rel: 'preconnect', href: 'https://www.googletag.com/' },
-        { rel: 'dns-prefetch', href: 'https://www.googletagmanager.com/' },
-        { rel: 'dns-prefetch', href: 'https://securepubads.g.doubleclick.net' }
-    ],
+    link: computed(() => {
+        const links = [
+            {
+                rel: 'stylesheet',
+                href: '/src/theme-aquiesportes/style.css'
+            },
+            {
+                rel: 'icon',
+                type: 'image/ico',
+                href: '/src/theme-aquiesportes/favicon.ico?v=2'
+            },
+            { rel: 'preconnect', href: 'https://www.googletagmanager.com/' },
+            { rel: 'preconnect', href: 'https://www.google-analytics.com/' },
+            { rel: 'preconnect', href: 'https://www.googletag.com/' },
+            { rel: 'preconnect', href: 'https://connect.facebook.net/' },
+            { rel: 'preconnect', href: 'https://securepubads.g.doubleclick.net/' },
+            { rel: 'preconnect', href: 'https://tpc.googlesyndication.com/' },
+            { rel: 'preconnect', href: 'https://www.googletag.com/' },
+            { rel: 'dns-prefetch', href: 'https://www.googletagmanager.com/' },
+            { rel: 'dns-prefetch', href: 'https://securepubads.g.doubleclick.net' }
+        ];
+        
+        // Adicionar favicon se disponível
+        if (settings.value?.['blog.favicon']) {
+            links.push({
+                rel: 'shortcut icon',
+                href: settings.value['blog.favicon'],
+                type: 'image/x-icon'
+            });
+        }
+        
+        // Adicionar canonical e feed RSS
+        if (settings.value?.['blog.url']) {
+            links.push(
+                { 
+                    rel: 'canonical', 
+                    href: settings.value['blog.url'] + route.fullPath 
+                },
+                { 
+                    rel: 'alternate', 
+                    href: `${settings.value['blog.url']}/feed`, 
+                    type: 'application/rss+xml', 
+                    title: settings.value['blog.title'] || 'RSS Feed'
+                }
+            );
+        }
+        
+        return links;
+    }),
 
-    script: scripts
+    script: scripts,
+
+    // Adicionar meta tags para instruções de cache para navegadores e proxies
+    meta: [
+        { httpEquiv: 'Cache-Control', content: 'public, max-age=31536000, immutable' },
+        { httpEquiv: 'x-dns-prefetch-control', content: 'on' }
+    ],
+    
+    // Adicionar hints de resource hints para recursos críticos
+    link: [
+        { rel: 'dns-prefetch', href: 'https://fonts.googleapis.com' },
+        { rel: 'dns-prefetch', href: 'https://fonts.gstatic.com' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com', crossorigin: 'anonymous' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
+    ]
 })
 
 const isDarkMode = ref(false);

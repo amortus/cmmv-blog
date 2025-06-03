@@ -27,17 +27,16 @@
                 <div v-if="coverSettings.layoutType === 'full' || !coverSettings.layoutType" class="bg-white rounded-lg overflow-hidden shadow-md">
                     <a v-if="coverPosts.full" :href="`/post/${coverPosts.full.slug}`" class="block">
                         <div class="relative h-[400px]">
-                            <img
+                            <OptimizedImage
                                 v-if="coverPosts.full && coverPosts.full.featureImage"
                                 :src="coverPosts.full.featureImage"
                                 :alt="coverPosts.full.title"
                                 class="w-full h-full object-cover"
-                                loading="lazy"
                                 width="890"
                                 height="606"
                                 :title="coverPosts.full.title"
                                 aria-label="Cover Image"
-                                fetchpriority="high"
+                                :critical="true"
                             />
                             <div v-else class="w-full h-full bg-gray-300 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,17 +68,16 @@
                              class="absolute w-full h-full transition-opacity duration-500 ease-in-out"
                              :class="{ 'opacity-100': currentCarouselIndex === index, 'opacity-0': currentCarouselIndex !== index }">
                             <a :href="`/post/${post.slug}`" class="block h-full">
-                                <img
+                                <OptimizedImage
                                     v-if="post.featureImage"
                                     :src="post.featureImage"
                                     :alt="post.title"
                                     class="w-full h-full object-cover"
-                                    loading="lazy"
                                     width="890"
                                     height="606"
                                     :title="post.title"
                                     aria-label="Cover Image"
-                                    fetchpriority="high"
+                                    :critical="index === 0"
                                 />
                                 <div v-else class="w-full h-full bg-gray-300 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -138,17 +136,16 @@
                     <div class="md:col-span-2 bg-white rounded-lg overflow-hidden shadow-md">
                         <a v-if="coverPosts.splitMain" :href="`/post/${coverPosts.splitMain.slug}`" class="block h-full">
                             <div class="relative h-full">
-                                <img
+                                <OptimizedImage
                                     v-if="coverPosts.splitMain && coverPosts.splitMain.featureImage"
                                     :src="coverPosts.splitMain.featureImage"
                                     :alt="coverPosts.splitMain.title"
                                     class="w-full h-full object-cover"
-                                    loading="lazy"
                                     width="890"
                                     height="606"
                                     :title="coverPosts.splitMain.title"
                                     aria-label="Cover Image"
-                                    fetchpriority="high"
+                                    :critical="true"
                                 />
                                 <div v-else class="w-full h-full bg-gray-300 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,6 +279,9 @@
                                         :src="post.featureImage"
                                         :alt="post.title"
                                         class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                        width="400"
+                                        height="225"
+                                        loading="eager"
                                     />
                                     <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -345,12 +345,21 @@
             </div>
             
             <!-- Mais Populares Section (Movida para depois de Últimas Notícias) -->
-            <section v-if="popularPosts && popularPosts.length > 0" class="mb-8 mt-8">
+            <section class="mb-8 mt-8">
                 <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                     Mais Populares
                 </h2>
 
-                <div class="relative px-3">
+                <!-- Mensagem de diagnóstico (temporária) -->
+                <div v-if="!popularPosts || popularPosts.length === 0 || !groupedPopularPosts || groupedPopularPosts.length === 0" 
+                     class="p-4 bg-gray-100 rounded-lg text-center mb-4">
+                    <p v-if="!popularPosts">popularPosts não está definido</p>
+                    <p v-else-if="popularPosts.length === 0">popularPosts está vazio</p>
+                    <p v-else-if="!groupedPopularPosts">groupedPopularPosts não está definido</p>
+                    <p v-else-if="groupedPopularPosts.length === 0">groupedPopularPosts está vazio</p>
+                </div>
+
+                <div v-if="popularPosts && popularPosts.length > 0 && groupedPopularPosts && groupedPopularPosts.length > 0" class="relative px-3">
                     <!-- Carrossel de posts populares -->
                     <div class="overflow-hidden">
                         <div class="flex transition-transform duration-700 ease-in-out" 
@@ -361,12 +370,13 @@
                                     <div class="flex flex-col h-full rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                                         <a :href="`/post/${post.slug}`" class="block rounded-t-md overflow-hidden">
                                             <div class="relative h-40">
-                                                <img
+                                                <OptimizedImage
                                                     v-if="post.featureImage"
                                                     :src="post.featureImage"
                                                     :alt="post.title"
                                                     class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                                                    loading="lazy"
+                                                    width="320"
+                                                    height="160"
                                                 />
                                                 <div v-else class="w-full h-40 bg-gray-200 flex items-center justify-center">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -394,19 +404,19 @@
                     </div>
 
                     <!-- Controles do carrossel -->
-                    <button @click="prevPopularPage" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10" aria-label="Posts populares anteriores">
+                    <button v-if="groupedPopularPosts.length > 1" @click="prevPopularPage" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-r-md focus:outline-none z-10" aria-label="Posts populares anteriores">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button @click="nextPopularPage" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10" aria-label="Próximos posts populares">
+                    <button v-if="groupedPopularPosts.length > 1" @click="nextPopularPage" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-l-md focus:outline-none z-10" aria-label="Próximos posts populares">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
 
                     <!-- Indicadores do carrossel -->
-                    <div class="flex justify-center mt-4 space-x-2">
+                    <div v-if="groupedPopularPosts.length > 1" class="flex justify-center mt-4 space-x-2">
                         <button
                             v-for="(_, index) in groupedPopularPosts.length"
                             :key="index"
@@ -420,7 +430,7 @@
             </section>
             
             <!-- Seção Mais Conteúdo -->
-            <div v-if="posts.length > (featuredPost ? 7 : 6)" class="flex-grow mt-8">
+            <div v-if="posts.length > (featuredPost ? 7 : 6)" class="flex-grow mt-8" ref="moreContentSection">
                 <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                     Mais Conteúdo
                 </h2>
@@ -437,11 +447,13 @@
                         >
                             <a :href="`/post/${post.slug}`" class="block">
                                 <div class="h-48 overflow-hidden relative">
-                                    <img
+                                    <OptimizedImage
                                         v-if="post.featureImage"
                                         :src="post.featureImage"
                                         :alt="post.title"
                                         class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                        width="400"
+                                        height="225"
                                     />
                                     <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -493,14 +505,19 @@
                         </button>
                         <div class="flex items-center mx-4 space-x-2">
                             <button
-                                v-for="(_, index) in moreContentPages.length"
-                                :key="index"
-                                @click="goToMoreContentPage(index)"
+                                v-for="pageIndex in visiblePageNumbers"
+                                :key="pageIndex"
+                                @click="pageIndex >= 0 ? goToMoreContentPage(pageIndex) : null"
                                 class="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                                :class="{ 'bg-[#001E62] text-white': currentMoreContentPage === index, 'bg-gray-200 text-gray-600 hover:bg-gray-300': currentMoreContentPage !== index }"
-                                :aria-label="`Ir para página ${index + 1}`"
+                                :class="{ 
+                                    'bg-[#001E62] text-white': currentMoreContentPage === pageIndex, 
+                                    'bg-gray-200 text-gray-600 hover:bg-gray-300': currentMoreContentPage !== pageIndex && pageIndex >= 0,
+                                    'bg-transparent cursor-default': pageIndex < 0
+                                }"
+                                :aria-label="pageIndex >= 0 ? `Ir para página ${pageIndex + 1}` : 'Páginas omitidas'"
                             >
-                                {{ index + 1 }}
+                                <span v-if="pageIndex >= 0">{{ pageIndex + 1 }}</span>
+                                <span v-else>...</span>
                             </button>
                         </div>
                         <button 
@@ -531,6 +548,7 @@ import { usePostsStore } from '../../store/posts';
 import { useMostAccessedPostsStore } from '../../store/mostaccessed';
 import { formatDate, stripHtml } from '../../composables/useUtils';
 import { useAds } from '../../composables/useAds';
+import OptimizedImage from '../composables/OptimizedImage.vue';
 
 // Declare adsbygoogle for TypeScript
 declare global {
@@ -574,6 +592,7 @@ const carouselInterval = ref<number | null>(null);
 
 // Elements references
 const sidebarLeftAdContainer = ref<HTMLElement | null>(null);
+const moreContentSection = ref<HTMLElement | null>(null);
 
 // Create formatted settings object for useAds
 const adPluginSettings = computed(() => {
@@ -596,6 +615,63 @@ const coverSettings = computed(() => {
 const hasCoverConfig = computed(() => {
     return !!settings.value.cover && Object.keys(coverSettings.value).length > 0;
 });
+
+// Pré-carregamento otimizado de imagens críticas
+const criticalImages = computed(() => {
+    const images = [];
+    
+    // Sempre pré-carregar a imagem do banner principal
+    if (posts.value.length > 0 && posts.value[0].featureImage) {
+        images.push(posts.value[0].featureImage);
+    }
+    
+    // Adicionar as primeiras imagens da seção "Mais Populares" se existirem
+    if (popularPosts.value && popularPosts.value.length > 0) {
+        const firstPopularPost = popularPosts.value[0];
+        if (firstPopularPost && firstPopularPost.featureImage) {
+            images.push(firstPopularPost.featureImage);
+        }
+    }
+    
+    return images;
+});
+
+// Melhor gerenciamento de preload de imagens
+const preloadLinks = computed(() => {
+    return criticalImages.value.map(url => ({
+        rel: 'preload',
+        as: 'image',
+        href: url,
+        fetchpriority: 'high',
+        type: 'image/jpeg' // assumindo que a maioria será JPEG
+    }));
+});
+
+// Configurar metadados e preloads no head
+useHead({
+    title: computed(() => settings.value.title),
+    meta: computed(() => [
+        { name: 'description', content: settings.value.description },
+        { name: 'keywords', content: settings.value.keywords },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:title', content: settings.value.title },
+        { property: 'og:description', content: settings.value.description },
+        { property: 'og:image', content: settings.value.logo }
+    ]),
+    link: computed(() => preloadLinks.value)
+});
+
+// Função otimizada para adicionar preload manualmente
+const addPreload = (url) => {
+    if (!url) return;
+    
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = url;
+    link.fetchPriority = 'high';
+    document.head.appendChild(link);
+};
 
 const coverPosts = computed(() => {
     if (!posts.value.length) return {};
@@ -678,11 +754,12 @@ const coverPosts = computed(() => {
     return result;
 });
 
+// Funções otimizadas para o carrossel
 const startCarouselInterval = () => {
+    stopCarouselInterval(); // Limpar qualquer intervalo existente primeiro
+    
     if (coverSettings.value.layoutType === 'carousel' && coverPosts.value.carousel?.length > 1) {
-        carouselInterval.value = window.setInterval(() => {
-            nextCarouselSlide();
-        }, 5000);
+        carouselInterval.value = window.setInterval(nextCarouselSlide, 5000);
     }
 };
 
@@ -694,38 +771,16 @@ const stopCarouselInterval = () => {
 };
 
 const nextCarouselSlide = () => {
-    stopCarouselInterval();
     if (coverPosts.value.carousel?.length) {
         currentCarouselIndex.value = (currentCarouselIndex.value + 1) % coverPosts.value.carousel.length;
     }
-    startCarouselInterval();
 };
 
 const prevCarouselSlide = () => {
-    stopCarouselInterval();
     if (coverPosts.value.carousel?.length) {
         currentCarouselIndex.value = (currentCarouselIndex.value - 1 + coverPosts.value.carousel.length) % coverPosts.value.carousel.length;
     }
-    startCarouselInterval();
 };
-
-const headData = ref({
-    title: settings.value.title,
-    meta: [
-        { name: 'description', content: settings.value.description },
-        { name: 'keywords', content: settings.value.keywords },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: settings.value.title },
-        { property: 'og:description', content: settings.value.description },
-        { property: 'og:image', content: settings.value.logo }
-    ],
-    link: [
-        { rel: 'canonical', href: settings.value.url },
-        { rel: 'alternate', href: `${settings.value.url}/feed`, type: 'application/rss+xml', title: settings.value.title }
-    ]
-});
-
-useHead(headData);
 
 const pagination = ref({
     total: 0,
@@ -755,7 +810,10 @@ const reviewPosts = computed(() => {
     }
 });
 
+// Função de carregamento de posts otimizada
 const loadPosts = async () => {
+    if (loading.value) return;
+    
     try {
         loading.value = true;
         error.value = null;
@@ -792,6 +850,7 @@ const loadPosts = async () => {
     }
 };
 
+// Função de carregamento de mais posts otimizada
 const loadMorePosts = async () => {
     if (loadingMore.value || !hasMorePosts.value) return;
 
@@ -822,10 +881,13 @@ const loadMorePosts = async () => {
 };
 
 const setupIntersectionObserver = () => {
+    if (observer.value) {
+        observer.value.disconnect();
+    }
+    
     observer.value = new IntersectionObserver(
         (entries) => {
             const [entry] = entries;
-
             if (entry.isIntersecting && hasMorePosts.value && !loadingMore.value)
                 loadMorePosts();
         },
@@ -843,7 +905,11 @@ const getAuthor = (post: any) => {
 };
 
 onMounted(async () => {
-    loading.value = false;
+    // Evitar carregamento duplicado se já tivermos posts
+    if (posts.value.length === 0) {
+        await loadPosts();
+    }
+    
     setupIntersectionObserver();
     startCarouselInterval();
 
@@ -851,10 +917,18 @@ onMounted(async () => {
     loadAdScripts();
     loadSidebarLeftAd(sidebarLeftAdContainer.value);
     
+    // Pré-carregar a imagem de capa principal quando disponível
+    if (posts.value && posts.value.length > 0 && posts.value[0].featureImage) {
+        addPreload(posts.value[0].featureImage);
+    }
+    
     // Carregar posts populares
     try {
         const response = await blogAPI.posts.getMostAccessed();
+        console.log("API de posts populares respondeu:", response ? "Sim" : "Não");
         if (response && Array.isArray(response)) {
+            console.log(`API retornou ${response.length} posts populares`);
+            
             // Ordena os posts mais populares pela data de publicação (mais recentes primeiro)
             const sortedPosts = [...response].sort((a, b) => {
                 const dateA = new Date(a.publishedAt || a.updatedAt).getTime();
@@ -862,17 +936,26 @@ onMounted(async () => {
                 return dateB - dateA; // Ordem decrescente (mais recentes primeiro)
             });
             
-            // Limita para 12 posts
-            let finalPosts = [...sortedPosts];
-            if (finalPosts.length < 12) {
-                const postsNeeded = 12 - finalPosts.length;
-                for (let i = 0; i < postsNeeded; i++) {
-                    // Usa o operador de módulo para ciclar pelos posts disponíveis
-                    finalPosts.push({...finalPosts[i % finalPosts.length]});
+            // Remove posts duplicados usando o ID como chave
+            const uniquePosts = [];
+            const seenIds = new Set();
+            
+            for (const post of sortedPosts) {
+                if (!seenIds.has(post.id)) {
+                    seenIds.add(post.id);
+                    uniquePosts.push(post);
                 }
-            } else {
+            }
+            
+            console.log(`Após remover duplicatas: ${uniquePosts.length} posts únicos`);
+            
+            // Usar apenas posts únicos, até o máximo de 12
+            let finalPosts = uniquePosts;
+            if (finalPosts.length > 12) {
                 finalPosts = finalPosts.slice(0, 12);
             }
+            
+            console.log(`Posts finais para exibição: ${finalPosts.length}`);
             
             // Garantir que todos os posts tenham a propriedade featureImage definida
             finalPosts = finalPosts.map(post => {
@@ -884,16 +967,40 @@ onMounted(async () => {
             
             // Agrupar os posts em conjuntos de 3
             groupedPopularPosts.value = groupPosts(finalPosts, 3);
+            console.log(`Grupos criados: ${groupedPopularPosts.value.length}`);
+            
             popularPosts.value = finalPosts;
+            console.log(`popularPosts.value tem ${popularPosts.value.length} itens`);
             
             // Inicializar páginas para a seção Mais Conteúdo
             if (posts.value.length > (featuredPost.value ? 7 : 6)) {
                 const moreContentPostsData = posts.value.slice(featuredPost.value ? 7 : 6);
                 moreContentPages.value = groupPosts(moreContentPostsData, postsPerMoreContentPage);
             }
+            
+            // Preload da primeira imagem popular
+            if (finalPosts.length > 0 && finalPosts[0].featureImage) {
+                addPreload(finalPosts[0].featureImage);
+            }
+        } else {
+            console.warn("API de posts populares não retornou um array:", response);
+            
+            // Usar os posts normais como fallback para a seção "Mais Populares"
+            if (posts.value && posts.value.length > 0) {
+                console.log("Usando posts regulares como fallback para seção Mais Populares");
+                popularPosts.value = posts.value.slice(0, 12);
+                groupedPopularPosts.value = groupPosts(popularPosts.value, 3);
+            }
         }
     } catch (err) {
         console.error('Failed to load popular posts:', err);
+        
+        // Usar os posts normais como fallback para a seção "Mais Populares" em caso de erro
+        if (posts.value && posts.value.length > 0) {
+            console.log("Usando posts regulares como fallback para seção Mais Populares (após erro)");
+            popularPosts.value = posts.value.slice(0, 12);
+            groupedPopularPosts.value = groupPosts(popularPosts.value, 3);
+        }
     }
 });
 
@@ -917,7 +1024,7 @@ const currentPopularPage = ref(0);
 // Variáveis para a paginação de Mais Conteúdo
 const moreContentPages = ref<any[][]>([]);
 const currentMoreContentPage = ref(0);
-const postsPerMoreContentPage = 5; // Número de posts por página na seção Mais Conteúdo
+const postsPerMoreContentPage = 9; // Aumentado para 9 posts por página para reduzir o número total de páginas
 
 // Computed para obter os posts da página atual na seção Mais Conteúdo
 const currentMoreContentPosts = computed(() => {
@@ -927,14 +1034,17 @@ const currentMoreContentPosts = computed(() => {
 
 // Funções para o carrossel de posts populares
 const nextPopularPage = () => {
+    stopCarouselInterval(); // Parar o intervalo automático quando o usuário interage
     currentPopularPage.value = (currentPopularPage.value + 1) % groupedPopularPosts.value.length;
 };
 
 const prevPopularPage = () => {
+    stopCarouselInterval(); // Parar o intervalo automático quando o usuário interage
     currentPopularPage.value = (currentPopularPage.value - 1 + groupedPopularPosts.value.length) % groupedPopularPosts.value.length;
 };
 
 const goToPopularPage = (index: number) => {
+    stopCarouselInterval(); // Parar o intervalo automático quando o usuário interage
     currentPopularPage.value = index;
 };
 
@@ -942,21 +1052,39 @@ const goToPopularPage = (index: number) => {
 const nextMoreContentPage = () => {
     if (currentMoreContentPage.value < moreContentPages.value.length - 1) {
         currentMoreContentPage.value++;
+        scrollToMoreContentSection();
     }
 };
 
 const prevMoreContentPage = () => {
     if (currentMoreContentPage.value > 0) {
         currentMoreContentPage.value--;
+        scrollToMoreContentSection();
     }
 };
 
 const goToMoreContentPage = (index: number) => {
     currentMoreContentPage.value = index;
+    scrollToMoreContentSection();
+};
+
+// Função separada para scrollar até a seção de conteúdo para reduzir duplicação
+const scrollToMoreContentSection = () => {
+    setTimeout(() => {
+        if (moreContentSection.value) {
+            // Usar um offset para garantir que a seção fique totalmente visível
+            window.scrollTo({
+                top: moreContentSection.value.offsetTop - 30,
+                behavior: 'smooth'
+            });
+        }
+    }, 200);
 };
 
 // Função para agrupar posts em grupos
 const groupPosts = (posts: any[], postsPerGroup: number) => {
+    if (!posts || !Array.isArray(posts)) return [];
+    
     const groups = [];
     for (let i = 0; i < posts.length; i += postsPerGroup) {
         groups.push(posts.slice(i, i + postsPerGroup));
@@ -972,6 +1100,57 @@ watch(posts, (newPosts) => {
         currentMoreContentPage.value = 0; // Resetar para a primeira página quando os posts mudarem
     }
 }, { deep: true });
+
+// Computed para obter os números de página a serem exibidos na paginação (com ellipsis)
+const visiblePageNumbers = computed(() => {
+    const totalPages = moreContentPages.value.length;
+    if (totalPages <= 7) {
+        // Se tivermos 7 ou menos páginas, mostrar todas
+        return Array.from({ length: totalPages }, (_, i) => i);
+    }
+    
+    const current = currentMoreContentPage.value;
+    
+    // Mostrar sempre a primeira e a última página, e algumas ao redor da atual
+    let pages = [0]; // Primeira página (índice 0)
+    
+    // Determinar intervalo ao redor da página atual
+    const offset = 2; // Quantas páginas mostrar antes/depois da atual
+    let startPage = Math.max(1, current - offset);
+    let endPage = Math.min(totalPages - 2, current + offset);
+    
+    // Ajustar para mostrar sempre 2*offset+1 páginas quando possível
+    if (current - offset <= 1) { 
+        // Estamos perto do início, mostrar mais páginas no final
+        endPage = Math.min(totalPages - 2, 2 * offset + 1);
+    }
+    if (current + offset >= totalPages - 2) {
+        // Estamos perto do fim, mostrar mais páginas no início
+        startPage = Math.max(1, totalPages - 2 - 2 * offset);
+    }
+    
+    // Adicionar ellipsis no início se necessário
+    if (startPage > 1) {
+        pages.push(-1); // -1 representa ellipsis
+    }
+    
+    // Adicionar páginas do intervalo
+    for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+    }
+    
+    // Adicionar ellipsis no final se necessário
+    if (endPage < totalPages - 2) {
+        pages.push(-2); // -2 representa ellipsis (usamos valor diferente para evitar problemas de key)
+    }
+    
+    // Adicionar a última página
+    if (totalPages > 1) {
+        pages.push(totalPages - 1);
+    }
+    
+    return pages;
+});
 </script>
 
 <style scoped>
