@@ -1,5 +1,22 @@
 <template>
-    <div class="w-full max-w-[1200px] mx-auto px-4">
+    <div class="w-full max-w-[1200px] mx-auto px-4 relative">
+        <!-- Banner Lateral (Apenas Desktop) -->
+        <div 
+            v-if="adSettings.enableAds" 
+            ref="sidebarLeftAdContainer" 
+            class="ad-sidebar-left fixed left-0 top-1/4 hidden xl:block z-10"
+            style="margin-left: min(calc((100vw - 1320px) / 2), 10px);"
+        >
+            <div class="ad-container ad-sidebar-left py-2 px-4" v-if="getAdHtml('sidebarLeft')">
+                <div v-html="getAdHtml('sidebarLeft')"></div>
+            </div>
+            <div class="ad-container ad-sidebar-left py-2 px-4" v-else>
+                <div class="ad-placeholder h-[600px] w-[120px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                    <span>Anúncio Lateral</span>
+                </div>
+            </div>
+        </div>
+
         <div v-if="error" class="text-center py-16 bg-white rounded-lg shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -22,7 +39,7 @@
 
         <div v-else>
             <!-- Cover Section -->
-            <section v-if="posts.length > 0" class="mb-8 md:block hidden">
+            <section v-if="posts.length > 0" class="mb-6 md:block hidden">
                 <!-- Full Layout (default) -->
                 <div v-if="coverSettings.layoutType === 'full' || !coverSettings.layoutType" class="bg-white rounded-lg overflow-hidden shadow-md">
                     <a v-if="coverPosts.full" :href="`/post/${coverPosts.full.slug}`" class="block">
@@ -243,32 +260,92 @@
                 </div>
             </section>
 
-            <!-- Top AdSense Banner -->
-            <div v-if="adSettings.enableAds && adSettings.homePageHeader" class="w-full bg-gray-100 rounded-lg mb-8 overflow-hidden flex justify-center">
-                <div class="ad-container ad-banner-top py-2 px-4" v-if="getAdHtml('header')">
-                    <div v-html="getAdHtml('header')"></div>
+            <!-- Anúncio entre o carrossel e as Últimas Notícias -->
+            <div v-if="adSettings.enableAds" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
+                <div class="ad-container ad-banner-mid py-2 px-4" v-if="getAdHtml('betweenSections')">
+                    <div v-html="getAdHtml('betweenSections')"></div>
                 </div>
-                <div class="ad-container ad-banner-top py-2 px-4" v-else>
+                <div class="ad-container ad-banner-mid py-2 px-4" v-else>
                     <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                        <span>Anúncio</span>
+                        <span>Anúncio Entre Seções</span>
                     </div>
                 </div>
             </div>
 
             <!-- Main Content Layout -->
-            <div class="flex flex-col lg:flex-row gap-8">
+            <div class="flex flex-col lg:flex-row gap-6">
 
                 <!-- Main Content Area -->
                 <div class="flex-grow">
                     <!-- Título principal que abrange toda a largura -->
-                    <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
+                    <h2 class="text-xl font-bold mb-4 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                         Últimas Notícias
                     </h2>
                     
                     <!-- Main Content em um único grid de 3 colunas -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Primeiros 4 posts -->
                         <article
-                            v-for="post in posts.slice(featuredPost ? 1 : 0, featuredPost ? 7 : 6)"
+                            v-for="post in posts.slice(featuredPost ? 1 : 0, featuredPost ? 5 : 4)"
+                            :key="post.id"
+                            class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
+                        >
+                            <!-- Conteúdo do card do post -->
+                            <a :href="`/post/${post.slug}`" class="block">
+                                <div class="h-48 overflow-hidden relative">
+                                    <img
+                                        v-if="post.featureImage"
+                                        :src="post.featureImage"
+                                        :alt="post.title"
+                                        class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                        width="400"
+                                        height="225"
+                                        loading="eager"
+                                    />
+                                    <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                        <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                            {{ post.categories[0].name }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="p-4">
+                                <a :href="`/post/${post.slug}`" class="block">
+                                    <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
+                                        {{ post.title }}
+                                    </h3>
+                                </a>
+                                <div class="flex justify-between items-center text-xs text-gray-700">
+                                    <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                    <span>{{ formatDate(post.publishedAt) }}</span>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <!-- Anúncio nativo (parece um card de conteúdo) -->
+                        <div v-if="adSettings.enableAds" class="rounded-lg overflow-hidden shadow-sm bg-white">
+                            <div class="ad-container ad-native py-2 px-4 h-full flex flex-col" v-if="getAdHtml('native')">
+                                <div v-html="getAdHtml('native')" class="h-full"></div>
+                            </div>
+                            <div class="ad-container h-full" v-else>
+                                <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                    <span class="text-gray-400 text-sm">Anúncio</span>
+                                </div>
+                                <div class="p-4">
+                                    <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Restantes 4 posts -->
+                        <article
+                            v-for="post in posts.slice(featuredPost ? 5 : 4, featuredPost ? 9 : 8)"
                             :key="post.id"
                             class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
                         >
@@ -307,34 +384,22 @@
                                 </div>
                             </div>
                         </article>
-
-                        <!-- Mid-content AdSense Banner -->
-                        <div v-if="adSettings.enableAds" class="w-full bg-gray-100 rounded-lg my-8 overflow-hidden flex justify-center lg:col-span-3">
-                            <div class="ad-container ad-banner-mid py-2 px-4" v-if="getAdHtml('inContent')">
-                                <div v-html="getAdHtml('inContent')"></div>
-                            </div>
-                            <div class="ad-container ad-banner-mid py-2 px-4" v-else>
-                                <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                                    <span>Anúncio</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Bottom AdSense Banner -->
-                    <div v-if="adSettings.enableAds && adSettings.homePageAfterPosts" class="w-full bg-gray-100 rounded-lg mt-8 mb-4 overflow-hidden flex justify-center lg:col-span-3">
+                    <div v-if="adSettings.enableAds && adSettings.homePageAfterPosts" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
                         <div class="ad-container ad-banner-bottom py-2 px-4" v-if="getAdHtml('belowContent')">
                             <div v-html="getAdHtml('belowContent')"></div>
                         </div>
                         <div class="ad-container ad-banner-bottom py-2 px-4" v-else>
                             <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                                <span>Anúncio</span>
+                                <span>Anúncio Inferior</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Loading More Indicator -->
-                    <div v-if="loadingMore" class="mt-8 flex justify-center items-center py-6">
+                    <div v-if="loadingMore" class="flex justify-center items-center py-4">
                         <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#001E62]"></div>
                         <span class="ml-3 text-gray-600">Carregando mais posts...</span>
                     </div>
@@ -344,9 +409,21 @@
                 </div>
             </div>
             
-            <!-- Mais Populares Section (Movida para depois de Últimas Notícias) -->
-            <section class="mb-8 mt-8">
-                <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
+            <!-- Anúncio antes da seção Mais Populares -->
+            <div v-if="adSettings.enableAds" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
+                <div class="ad-container ad-banner-before-popular py-2 px-4" v-if="getAdHtml('beforePopular')">
+                    <div v-html="getAdHtml('beforePopular')"></div>
+                </div>
+                <div class="ad-container ad-banner-before-popular py-2 px-4" v-else>
+                    <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                        <span>Anúncio Antes dos Populares</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mais Populares Section -->
+            <section class="mb-6">
+                <h2 class="text-xl font-bold mb-4 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                     Mais Populares
                 </h2>
 
@@ -356,46 +433,119 @@
                     <p>Nenhum post popular encontrado</p>
                 </div>
 
-                <!-- Grid estático de posts populares -->
-                <div v-if="popularPosts && popularPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div v-for="post in popularPosts.slice(0, 6)" :key="post.id" 
-                         class="flex flex-col h-full rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                        <a :href="`/post/${post.slug}`" class="block rounded-t-md overflow-hidden">
-                            <div class="relative h-40">
-                                <OptimizedImage
+                <!-- Grid de posts populares -->
+                <div v-if="popularPosts && popularPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Primeiros 4 posts populares -->
+                    <article v-for="post in popularPosts.slice(0, 4)" :key="post.id" 
+                         class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm">
+                        <a :href="`/post/${post.slug}`" class="block">
+                            <div class="h-48 overflow-hidden relative">
+                                <img
                                     v-if="post.featureImage"
                                     :src="post.featureImage"
                                     :alt="post.title"
                                     class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                                    width="320"
-                                    height="160"
+                                    width="400"
+                                    height="225"
+                                    loading="lazy"
                                 />
-                                <div v-else class="w-full h-40 bg-gray-200 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
+                                <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                    <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                        {{ post.categories[0].name }}
+                                    </span>
+                                </div>
                             </div>
                         </a>
-                        <div class="p-4 flex-grow">
-                            <a :href="`/post/${post.slug}`" class="block mb-1">
-                                <h3 class="text-sm font-bold text-gray-800 hover:text-[#001E62] hover:underline leading-tight">
+                        <div class="p-4">
+                            <a :href="`/post/${post.slug}`" class="block">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
                                     {{ post.title }}
                                 </h3>
                             </a>
-                            <div v-if="post.categories && post.categories.length > 0" class="mt-1">
-                                <span class="bg-[#ffcc00] text-[#333] px-2 py-0.5 rounded-md text-xs font-medium">
-                                    {{ post.categories[0].name }}
-                                </span>
+                            <div class="flex justify-between items-center text-xs text-gray-700">
+                                <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                <span>{{ formatDate(post.publishedAt) }}</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- Anúncio nativo entre posts populares -->
+                    <div v-if="adSettings.enableAds" class="rounded-lg overflow-hidden shadow-sm bg-white">
+                        <div class="ad-container ad-native-popular py-2 px-4 h-full flex flex-col" v-if="getAdHtml('nativePopular')">
+                            <div v-html="getAdHtml('nativePopular')" class="h-full"></div>
+                        </div>
+                        <div class="ad-container h-full" v-else>
+                            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                <span class="text-gray-400 text-sm">Anúncio</span>
+                            </div>
+                            <div class="p-4">
+                                <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                <div class="h-4 bg-gray-200 rounded w-1/2"></div>
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Restantes 4 posts populares -->
+                    <article v-for="post in popularPosts.slice(4, 8)" :key="post.id" 
+                         class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm">
+                        <a :href="`/post/${post.slug}`" class="block">
+                            <div class="h-48 overflow-hidden relative">
+                                <img
+                                    v-if="post.featureImage"
+                                    :src="post.featureImage"
+                                    :alt="post.title"
+                                    class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                    width="400"
+                                    height="225"
+                                    loading="lazy"
+                                />
+                                <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                    <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                        {{ post.categories[0].name }}
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="p-4">
+                            <a :href="`/post/${post.slug}`" class="block">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
+                                    {{ post.title }}
+                                </h3>
+                            </a>
+                            <div class="flex justify-between items-center text-xs text-gray-700">
+                                <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                <span>{{ formatDate(post.publishedAt) }}</span>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </section>
             
+            <!-- Anúncio entre Mais Populares e Mais Conteúdo -->
+            <div v-if="adSettings.enableAds && posts.length > (featuredPost ? 9 : 8)" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
+                <div class="ad-container ad-banner-between-popular-more py-2 px-4" v-if="getAdHtml('betweenPopularMore')">
+                    <div v-html="getAdHtml('betweenPopularMore')"></div>
+                </div>
+                <div class="ad-container ad-banner-between-popular-more py-2 px-4" v-else>
+                    <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                        <span>Anúncio Entre Populares e Mais Conteúdo</span>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Seção Mais Conteúdo -->
-            <div v-if="posts.length > (featuredPost ? 7 : 6)" class="flex-grow mt-8" ref="moreContentSection">
-                <h2 class="text-xl font-bold mb-6 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
+            <div v-if="posts.length > (featuredPost ? 9 : 8)" class="flex-grow mt-6" ref="moreContentSection">
+                <h2 class="text-xl font-bold mb-4 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                     Mais Conteúdo
                 </h2>
 
@@ -404,57 +554,64 @@
                     <!-- Conteúdo paginado -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Primeiros posts na página atual -->
-                        <article
-                            v-for="post in currentMoreContentPosts"
-                            :key="post.id"
-                            class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
-                        >
-                            <a :href="`/post/${post.slug}`" class="block">
-                                <div class="h-48 overflow-hidden relative">
-                                    <OptimizedImage
-                                        v-if="post.featureImage"
-                                        :src="post.featureImage"
-                                        :alt="post.title"
-                                        class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                                        width="400"
-                                        height="225"
-                                    />
-                                    <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
-                                        <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
-                                            {{ post.categories[0].name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="p-4">
+                        <template v-for="(post, index) in currentMoreContentPosts" :key="post.id">
+                            <article
+                                class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
+                            >
                                 <a :href="`/post/${post.slug}`" class="block">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
-                                        {{ post.title }}
-                                    </h3>
+                                    <div class="h-48 overflow-hidden relative">
+                                        <OptimizedImage
+                                            v-if="post.featureImage"
+                                            :src="post.featureImage"
+                                            :alt="post.title"
+                                            class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                            width="400"
+                                            height="225"
+                                        />
+                                        <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                            <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                                {{ post.categories[0].name }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </a>
-                                <div class="flex justify-between items-center text-xs text-gray-700">
-                                    <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
-                                    <span>{{ formatDate(post.publishedAt) }}</span>
+                                <div class="p-4">
+                                    <a :href="`/post/${post.slug}`" class="block">
+                                        <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
+                                            {{ post.title }}
+                                        </h3>
+                                    </a>
+                                    <div class="flex justify-between items-center text-xs text-gray-700">
+                                        <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                        <span>{{ formatDate(post.publishedAt) }}</span>
+                                    </div>
+                                </div>
+                            </article>
+                            
+                            <!-- Anúncio nativo após o 3º post -->
+                            <div 
+                                v-if="adSettings.enableAds && index === 2" 
+                                class="rounded-lg overflow-hidden shadow-sm bg-white"
+                            >
+                                <div class="ad-container ad-native-more-content py-2 px-4 h-full flex flex-col" v-if="getAdHtml('nativeMoreContent')">
+                                    <div v-html="getAdHtml('nativeMoreContent')" class="h-full"></div>
+                                </div>
+                                <div class="ad-container h-full" v-else>
+                                    <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                        <span class="text-gray-400 text-sm">Anúncio</span>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </article>
-                        
-                        <!-- Anúncio em todas as páginas -->
-                        <div v-if="adSettings.enableAds" class="bg-gray-100 rounded-lg p-2 flex justify-center h-[250px]">
-                            <div class="ad-container ad-banner-mid py-2 px-4 w-full" v-if="getAdHtml('inContent')">
-                                <div v-html="getAdHtml('inContent')"></div>
-                            </div>
-                            <div class="ad-container ad-banner-mid py-2 px-4 w-full" v-else>
-                                <div class="ad-placeholder h-[200px] w-[300px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                                    <span>Anúncio (Página {{ currentMoreContentPage + 1 }})</span>
-                                </div>
-                            </div>
-                        </div>
+                        </template>
                     </div>
 
                     <!-- Controles de paginação -->
@@ -505,7 +662,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { useHead } from '@unhead/vue';
 import { vue3 } from '@cmmv/blog/client';
 import { useSettingsStore } from '../../store/settings';
@@ -567,6 +724,18 @@ const adPluginSettings = computed(() => {
 
 // Set up ads functionality using the composable
 const { adSettings, getAdHtml, loadAdScripts, loadSidebarLeftAd } = useAds(adPluginSettings.value, 'home');
+
+// Novas configurações de anúncios adicionais
+const adPositions = [
+  'betweenSections',
+  'belowContent', 
+  'sidebarLeft', 
+  'native', 
+  'nativePopular',
+  'nativeMoreContent',
+  'beforePopular',
+  'betweenPopularMore'
+];
 
 const coverSettings = computed(() => {
     try {
@@ -870,6 +1039,23 @@ const getAuthor = (post: any) => {
     return post.authors.find((author: any) => author.id === post.author);
 };
 
+// Função para ajustar posição do banner lateral
+const adjustSidebarAdPosition = () => {
+  if (!sidebarLeftAdContainer.value) return;
+  
+  const viewportWidth = window.innerWidth;
+  const mainContainerWidth = 1320; // Largura ajustada considerando margens
+  
+  if (viewportWidth >= 1280) { // xl breakpoint
+    // Calcular a margem, mas com um limite mínimo para evitar sobreposição
+    const margin = Math.min(Math.max(10, (viewportWidth - mainContainerWidth) / 2), 20);
+    sidebarLeftAdContainer.value.style.marginLeft = `${margin}px`;
+    sidebarLeftAdContainer.value.style.display = 'block';
+  } else {
+    sidebarLeftAdContainer.value.style.display = 'none';
+  }
+};
+
 onMounted(async () => {
     // Evitar carregamento duplicado se já tivermos posts
     if (posts.value.length === 0) {
@@ -879,9 +1065,19 @@ onMounted(async () => {
     setupIntersectionObserver();
     startCarouselInterval();
 
-    // Load ad scripts and sidebar left ad
+    // Carregar todos os scripts de anúncios
     loadAdScripts();
-    loadSidebarLeftAd(sidebarLeftAdContainer.value);
+    
+    // Inicializar e ajustar anúncio lateral
+    nextTick(() => {
+        adjustSidebarAdPosition();
+        window.addEventListener('resize', adjustSidebarAdPosition);
+        
+        // Carregar anúncio lateral se estiver visível
+        if (sidebarLeftAdContainer.value && window.innerWidth >= 1280) {
+            loadSidebarLeftAd(sidebarLeftAdContainer.value);
+        }
+    });
     
     // Pré-carregar a imagem de capa principal quando disponível
     if (posts.value && posts.value.length > 0 && posts.value[0].featureImage) {
@@ -892,7 +1088,7 @@ onMounted(async () => {
     try {
         const response = await blogAPI.posts.getMostAccessed();
         console.log("API de posts populares respondeu:", response ? "Sim" : "Não");
-        if (response && Array.isArray(response)) {
+        if (response && Array.isArray(response) && response.length > 0) {
             console.log(`API retornou ${response.length} posts populares`);
             
             // Ordena os posts mais populares pela data de publicação (mais recentes primeiro)
@@ -937,38 +1133,49 @@ onMounted(async () => {
             
             popularPosts.value = finalPosts;
             console.log(`popularPosts.value tem ${popularPosts.value.length} itens`);
-            
-            // Inicializar páginas para a seção Mais Conteúdo
-            if (posts.value.length > (featuredPost.value ? 7 : 6)) {
-                const moreContentPostsData = posts.value.slice(featuredPost.value ? 7 : 6);
-                moreContentPages.value = groupPosts(moreContentPostsData, postsPerMoreContentPage);
-            }
-            
-            // Preload da primeira imagem popular
-            if (finalPosts.length > 0 && finalPosts[0].featureImage) {
-                addPreload(finalPosts[0].featureImage);
-            }
         } else {
-            console.warn("API de posts populares não retornou um array:", response);
-            
-            // Usar os posts normais como fallback para a seção "Mais Populares"
-            if (posts.value && posts.value.length > 0) {
-                console.log("Usando posts regulares como fallback para seção Mais Populares");
-                popularPosts.value = posts.value.slice(0, 12);
-                groupedPopularPosts.value = groupPosts(popularPosts.value, 3);
-            }
+            console.warn("API de posts populares não retornou dados válidos, usando fallback");
+            useFallbackPopularPosts();
         }
     } catch (err) {
-        console.error('Failed to load popular posts:', err);
-        
-        // Usar os posts normais como fallback para a seção "Mais Populares" em caso de erro
-        if (posts.value && posts.value.length > 0) {
-            console.log("Usando posts regulares como fallback para seção Mais Populares (após erro)");
-            popularPosts.value = posts.value.slice(0, 12);
-            groupedPopularPosts.value = groupPosts(popularPosts.value, 3);
-        }
+        console.error('Erro ao carregar posts populares:', err);
+        useFallbackPopularPosts();
+    }
+    
+    // Inicializar páginas para a seção Mais Conteúdo
+    if (posts.value.length > (featuredPost.value ? 9 : 8)) {
+        const moreContentPostsData = posts.value.slice(featuredPost.value ? 9 : 8);
+        moreContentPages.value = groupPosts(moreContentPostsData, postsPerMoreContentPage);
     }
 });
+
+// Função para usar posts regulares como fallback para posts populares
+const useFallbackPopularPosts = () => {
+    if (posts.value && posts.value.length > 0) {
+        console.log("Usando posts regulares como fallback para posts populares");
+        // Usar um número suficiente de posts para preencher a grade (8 posts)
+        popularPosts.value = posts.value.slice(0, Math.min(12, posts.value.length));
+        
+        // Garantir que temos pelo menos 8 posts
+        if (popularPosts.value.length < 8) {
+            // Duplicar alguns posts para atingir 8 se necessário
+            const additionalNeeded = 8 - popularPosts.value.length;
+            if (additionalNeeded > 0 && popularPosts.value.length > 0) {
+                // Duplicar os primeiros posts para preencher
+                const duplicates = [];
+                for (let i = 0; i < additionalNeeded; i++) {
+                    const duplicatePost = {...popularPosts.value[i % popularPosts.value.length]};
+                    // Adicionar um sufixo ao ID para evitar problemas de chave duplicada
+                    duplicatePost.id = duplicatePost.id + '_duplicate_' + i;
+                    duplicates.push(duplicatePost);
+                }
+                popularPosts.value = [...popularPosts.value, ...duplicates];
+            }
+        }
+        
+        groupedPopularPosts.value = groupPosts(popularPosts.value, 3);
+    }
+};
 
 onUnmounted(() => {
     if (observer.value && observerTarget.value) {
@@ -976,6 +1183,9 @@ onUnmounted(() => {
         observer.value.disconnect();
     }
     stopCarouselInterval();
+    
+    // Remover event listener ao desmontar
+    window.removeEventListener('resize', adjustSidebarAdPosition);
 });
 
 watch(() => settings.value['blog.cover'], () => {
@@ -990,7 +1200,7 @@ const currentPopularPage = ref(0);
 // Variáveis para a paginação de Mais Conteúdo
 const moreContentPages = ref<any[][]>([]);
 const currentMoreContentPage = ref(0);
-const postsPerMoreContentPage = 9; // Aumentado para 9 posts por página para reduzir o número total de páginas
+const postsPerMoreContentPage = 8; // Alterado de 9 para 8 posts por página
 
 // Computed para obter os posts da página atual na seção Mais Conteúdo
 const currentMoreContentPosts = computed(() => {
@@ -1057,8 +1267,8 @@ const groupPosts = (posts: any[], postsPerGroup: number) => {
 
 // Observar mudanças nos posts para atualizar a paginação
 watch(posts, (newPosts) => {
-    if (newPosts.length > (featuredPost.value ? 7 : 6)) {
-        const moreContentPostsData = newPosts.slice(featuredPost.value ? 7 : 6);
+    if (newPosts.length > (featuredPost.value ? 9 : 8)) {
+        const moreContentPostsData = newPosts.slice(featuredPost.value ? 9 : 8);
         moreContentPages.value = groupPosts(moreContentPostsData, postsPerMoreContentPage);
         currentMoreContentPage.value = 0; // Resetar para a primeira página quando os posts mudarem
     }
@@ -1159,8 +1369,13 @@ const handleWindowResize = () => {
     border-radius: 4px;
 }
 
+/* Estilos específicos para anúncios laterais */
+.ad-sidebar-left {
+    transition: opacity 0.3s ease;
+}
+
 /* Only hide the left sidebar on screens smaller than 1280px */
-@media (max-width: 1280px) {
+@media (max-width: 1279px) {
     .ad-sidebar-left {
         display: none;
     }
