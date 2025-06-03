@@ -238,8 +238,7 @@
 
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     <a v-for="campaign in featuredCampaigns.slice(0, 18)" :key="campaign.id" :href="`/desconto/${campaign.slug}`"
-                        class="store-card bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center hover:shadow-lg transition-all"
-                        :class="{'border-indigo-200 bg-indigo-50': campaign.highlight}">
+                        class="store-card bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center hover:shadow-lg transition-all">
                         <div class="text-center">
                             <div class="w-16 h-16 mx-auto mb-2 flex items-center justify-center">
                                 <img v-if="campaign.logo" :src="campaign.logo" :alt="campaign.name" class="max-w-full max-h-full">
@@ -865,80 +864,5 @@ watch(() => settings.value['blog.cover'], () => {
     startCarouselInterval();
 }, { deep: true });
 </script>
-
-<style scoped>
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.h-18 {
-    height: 4.5rem;
-}
-
-/* Estilos para o botão de cupom */
-.coupon-button {
-    position: relative;
-    z-index: 1;
-    border-radius: 6px 6px 3px 3px;
-}
-
-.coupon-button .coupon-cover {
-    transition: all 0.3s ease-in-out;
-    z-index: 10;
-    right: 0;
-    width: 70%;
-}
-
-.coupon-button .coupon-cover::after {
-    display: none;
-}
-
-.coupon-button .coupon-cover::before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    right: -28px;
-    width: 40px;
-    height: 55px;
-    background: linear-gradient(36deg, #b1cea8, #c6e8b8 38%, #c9e0be 47%, #c0e1b3 51%, rgba(255,255,255,0) 54%);
-    transform: rotate(35deg);
-    transform-origin: center center;
-    border-radius: 6px 6px 3px 3px;
-    z-index: 12;
-    transition: all 0.3s ease-in-out;
-    display: block;
-}
-
-.coupon-button:hover .coupon-cover {
-    width: 60%;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.15);
-}
-
-.coupon-button:hover .coupon-cover::before {
-    top: 0px;
-    right: -32px;
-    transform: rotate(30deg);
-    width: 44px;
-    height: 55px;
-}
-
-.coupon-button.expired .coupon-cover {
-    background-color: #9ca3af !important;
-}
-
-.coupon-button.expired .coupon-cover::before {
-    background: linear-gradient(36deg, #d1d5db, #e5e7eb 38%, #f3f4f6 47%, #e5e7eb 51%, rgba(255,255,255,0) 54%);
-}
-</style>
 
 
