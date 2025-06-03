@@ -7,7 +7,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="text-2xl font-bold text-white">
-                            <img src="/src/theme-cupomnahora/assets/Logo-1.png" width="147" height="32" alt="Logo" title="Logo">
+                            <img src="/src/theme-cupomnahora/assets/Logo-1.png" width="100" height="24" alt="Logo" title="Logo">
                         </a>
                     </div>
 
@@ -242,12 +242,12 @@
                                         <p v-if="searchResults.length > 0 || searchCampaigns.length > 0" class="text-sm text-gray-500 mb-2">
                                             {{ searchResults.length + searchCampaigns.length }} resultado{{ (searchResults.length + searchCampaigns.length) !== 1 ? 's' : '' }} encontrado{{ (searchResults.length + searchCampaigns.length) !== 1 ? 's' : '' }}
                                         </p>
-                                        
+
                                         <!-- Resultados de Lojas -->
                                         <div v-if="searchCampaigns.length > 0" class="mb-6">
                                             <h4 class="text-lg font-medium text-gray-700 mb-3 border-b pb-2">Lojas</h4>
                                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                                <a v-for="campaign in searchCampaigns" :key="campaign.id" 
+                                                <a v-for="campaign in searchCampaigns" :key="campaign.id"
                                                    :href="`/desconto/${campaign.slug}`"
                                                    class="store-card bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center hover:shadow-md transition-all"
                                                    :class="{'border-indigo-200 bg-indigo-50': campaign.highlight}">
@@ -266,7 +266,7 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        
+
                                         <!-- Resultados de Posts -->
                                         <div v-if="searchResults.length > 0" class="mb-6">
                                             <h4 class="text-lg font-medium text-gray-700 mb-3 border-b pb-2">Artigos do Blog</h4>
@@ -303,18 +303,28 @@
                 </div>
             </div>
         </div>
+
+        <!-- Cupom Modal -->
+        <CouponScratchModal
+            :visible="isScratchModalOpen"
+            :coupon="selectedCouponForScratch"
+            @close="closeScratchModal" />
     </div>
 
     <CookieConsent />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, watch, onBeforeUnmount, onServerPrefetch } from 'vue';
 import { vue3 } from '@cmmv/blog/client';
 import { useHead } from '@unhead/vue'
 import { useSettingsStore } from '../../store/settings';
 import { useCategoriesStore } from '../../store/categories';
+import { useCampaignsStore } from '../../store/campaigns';
+import { useCouponsStore } from '../../store/coupons';
 import { vue3 as affiliateVue3 } from '@cmmv/affiliate/client';
+import { useRoute } from 'vue-router';
+import CouponScratchModal from '../components/CouponScratchModal.vue';
 
 import CookieConsent from '../../components/CookieConsent.vue';
 
@@ -322,7 +332,10 @@ const blogAPI = vue3.useBlog();
 const affiliateAPI = affiliateVue3.useAffiliate();
 const categoriesStore = useCategoriesStore();
 const settingsStore = useSettingsStore();
-
+const campaignsStore = useCampaignsStore();
+const couponsStore = useCouponsStore();
+const route = useRoute();
+const isSSR = typeof window === 'undefined';
 const settings = ref<any>(settingsStore.getSettings);
 
 const scripts = computed(() => {
@@ -448,12 +461,12 @@ const performSearch = async () => {
     try {
         // Buscar posts do blog
         const postPromise = blogAPI.posts.search(searchQuery.value);
-        
+
         // Buscar todas as campanhas
         const campaignsPromise = affiliateAPI.campaigns.getAllWithCouponCounts();
-        
+
         const [postResponse, allCampaigns] = await Promise.all([postPromise, campaignsPromise]);
-        
+
         // Processar resultados dos posts
         if (Array.isArray(postResponse)) {
             searchResults.value = postResponse;
@@ -463,27 +476,27 @@ const performSearch = async () => {
         } else {
             searchResults.value = [];
         }
-        
+
         // Processar resultados das campanhas
         if (allCampaigns && Array.isArray(allCampaigns)) {
             const query = searchQuery.value.toLowerCase().trim();
-            
+
             // Filtragem de campanhas
             const filtered: any[] = [];
-            
+
             for (const campaign of allCampaigns) {
                 if (!campaign || !campaign.name) continue;
-                
+
                 const campName = campaign.name.toLowerCase();
                 const campSlug = campaign.slug ? campaign.slug.toLowerCase() : '';
                 const campDescription = campaign.description ? campaign.description.toLowerCase() : '';
-                
+
                 // Verificação normal
                 if (campName.includes(query) || campSlug.includes(query) || campDescription.includes(query)) {
                     filtered.push(campaign);
                 }
             }
-            
+
             searchCampaigns.value = filtered;
         } else {
             searchCampaigns.value = [];
@@ -517,23 +530,82 @@ const categoriesColumns = computed(() => {
     ];
 });
 
-onMounted(async () => {
-    await Promise.all([
-        (async () => {
-            if (!categories.value.length) {
-                try {
-                    const categoriesResponse = await blogAPI.categories.getAll();
-                    if (categoriesResponse) {
-                        categories.value = categoriesResponse;
-                    }
-                } catch (err) {
-                    console.error('Failed to load categories:', err);
-                }
-            }
-        })()
-    ]);
+const isScratchModalOpen = ref(false);
+const selectedCouponForScratch = ref<any | null>(null);
 
+const checkCouponInUrl = async () => {
+    const displayCode = route.query.display;
+
+    if (displayCode && typeof displayCode === 'string') {
+        try {
+            const tempCoupon = {
+                id: 'temp-' + Date.now(),
+                code: displayCode,
+                title: 'Cupom de desconto',
+                campaignName: 'Loja',
+                description: 'Use este cupom para obter desconto em sua compra.'
+            };
+
+            selectedCouponForScratch.value = tempCoupon;
+            isScratchModalOpen.value = true;
+        } catch (error) {
+            console.error('Erro ao processar código do cupom:', error);
+        }
+    }
+};
+
+const closeScratchModal = () => {
+    isScratchModalOpen.value = false;
+    selectedCouponForScratch.value = null;
+};
+
+const loadInitialData = async () => {
+    try {
+        if (!categories.value.length) {
+            const categoriesResponse = await blogAPI.categories.getAll();
+            if (categoriesResponse) {
+                categories.value = categoriesResponse;
+                categoriesStore.setCategories(categoriesResponse);
+            }
+        }
+
+        if (!campaignsStore.getCampaigns) {
+            const campaignsData = await affiliateAPI.campaigns.getAllWithCouponCounts();
+            if (campaignsData && campaignsData.length > 0) {
+                campaignsStore.setCampaigns(campaignsData);
+            }
+        }
+
+        if (couponsStore.getFeaturedCoupons.length === 0) {
+            const featuredCouponsData = await affiliateAPI.coupons.getMostViewed();
+            if (featuredCouponsData && featuredCouponsData.length > 0) {
+                couponsStore.setFeaturedCoupons(featuredCouponsData);
+            }
+        }
+
+        if (couponsStore.getTop25Coupons.length === 0) {
+            const top25CouponsData = await affiliateAPI.coupons.getTop25WeeklyCoupons();
+            if (top25CouponsData && top25CouponsData.length > 0) {
+                couponsStore.setTop25Coupons(top25CouponsData);
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao carregar dados iniciais:", error);
+    }
+};
+
+onServerPrefetch(async () => {
+    await loadInitialData();
+});
+
+onMounted(async () => {
+    await loadInitialData();
     document.addEventListener('click', closeDropdownsOnClickOutside);
+    await checkCouponInUrl();
+});
+
+watch(() => route.query.display, async () => {
+    await checkCouponInUrl();
 });
 
 onBeforeUnmount(() => {

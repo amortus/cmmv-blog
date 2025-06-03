@@ -84,6 +84,9 @@ export class AffiliateCampaignsContract extends AbstractContract {
     @ContractField({
         protoType: 'array',
         objectType: 'string',
+        entityType: 'string',
+        exclude: true,
+        array: true,
         nullable: true,
         protoRepeated: true,
         index: true
