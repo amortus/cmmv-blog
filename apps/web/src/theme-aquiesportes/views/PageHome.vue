@@ -286,7 +286,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                         <!-- Primeiros 4 posts -->
                         <article
-                            v-for="post in posts.slice(featuredPost ? 1 : 0, featuredPost ? 5 : 4)"
+                            v-for="post in posts.slice(3, 7)"
                             :key="post.id"
                             class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
                         >
@@ -345,7 +345,7 @@
                         
                         <!-- Restantes 4 posts -->
                         <article
-                            v-for="post in posts.slice(featuredPost ? 5 : 4, featuredPost ? 9 : 8)"
+                            v-for="post in posts.slice(7, 11)"
                             :key="post.id"
                             class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
                         >
@@ -532,7 +532,7 @@
             </section>
             
             <!-- Anúncio entre Mais Populares e Mais Conteúdo -->
-            <div v-if="adSettings.enableAds && posts.length > (featuredPost ? 9 : 8)" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
+            <div v-if="adSettings.enableAds && posts.length > 11" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
                 <div class="ad-container ad-banner-between-popular-more py-2 px-4" v-if="getAdHtml('betweenPopularMore')">
                     <div v-html="getAdHtml('betweenPopularMore')"></div>
                 </div>
@@ -544,7 +544,7 @@
             </div>
             
             <!-- Seção Mais Conteúdo -->
-            <div v-if="posts.length > (featuredPost ? 9 : 8)" class="flex-grow mt-6" ref="moreContentSection">
+            <div v-if="posts.length > 11" class="flex-grow mt-6" ref="moreContentSection">
                 <h2 class="text-xl font-bold mb-4 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
                     Mais Conteúdo
                 </h2>
@@ -1143,8 +1143,8 @@ onMounted(async () => {
     }
     
     // Inicializar páginas para a seção Mais Conteúdo
-    if (posts.value.length > (featuredPost.value ? 9 : 8)) {
-        const moreContentPostsData = posts.value.slice(featuredPost.value ? 9 : 8);
+    if (posts.value.length > 11) {
+        const moreContentPostsData = posts.value.slice(11);
         moreContentPages.value = groupPosts(moreContentPostsData, postsPerMoreContentPage);
     }
 });
@@ -1267,8 +1267,8 @@ const groupPosts = (posts: any[], postsPerGroup: number) => {
 
 // Observar mudanças nos posts para atualizar a paginação
 watch(posts, (newPosts) => {
-    if (newPosts.length > (featuredPost.value ? 9 : 8)) {
-        const moreContentPostsData = newPosts.slice(featuredPost.value ? 9 : 8);
+    if (newPosts.length > 11) {
+        const moreContentPostsData = newPosts.slice(11);
         moreContentPages.value = groupPosts(moreContentPostsData, postsPerMoreContentPage);
         currentMoreContentPage.value = 0; // Resetar para a primeira página quando os posts mudarem
     }
