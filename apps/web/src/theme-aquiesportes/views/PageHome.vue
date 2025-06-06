@@ -38,7 +38,7 @@
         </div>
 
         <div v-else>
-            <!-- Cover Section -->
+            <!-- Cover Section (Desktop) -->
             <section v-if="posts.length > 0" class="mb-6 md:block hidden">
                 <!-- Full Layout (default) -->
                 <div v-if="coverSettings.layoutType === 'full' || !coverSettings.layoutType" class="bg-white rounded-lg overflow-hidden shadow-md">
@@ -257,6 +257,63 @@
                             </div>
                         </a>
                     </div>
+                </div>
+            </section>
+
+            <!-- Cover Posts Mobile Section -->
+            <section v-if="posts.length > 0" class="mb-6 md:hidden">
+                <h2 class="text-xl font-bold mb-4 pb-2 text-[#001E62] border-b-2 border-[#ffcc00]">
+                    Destaques
+                </h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Posts da capa em formato único -->
+                    <article 
+                        v-for="post in coverSettings.layoutType === 'split' 
+                            ? [coverPosts.splitMain, ...coverPosts.splitSide] 
+                            : coverSettings.layoutType === 'dual' 
+                                ? coverPosts.dual
+                                : coverSettings.layoutType === 'carousel' 
+                                    ? coverPosts.carousel.slice(0, 3) 
+                                    : posts.slice(0, 3)"
+                        :key="post.id"
+                        class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
+                    >
+                        <a :href="`/post/${post.slug}`" class="block">
+                            <div class="relative h-[180px] overflow-hidden">
+                                <img
+                                    v-if="post.featureImage"
+                                    :src="post.featureImage"
+                                    :alt="post.title"
+                                    class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                    width="400"
+                                    height="225"
+                                    loading="eager"
+                                />
+                                <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                    <span class="bg-[#ffcc00] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                        {{ post.categories[0].name }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#001E62] transition-colors">
+                                    {{ post.title }}
+                                </h3>
+                                <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                                    {{ post.excerpt || stripHtml(post.content).substring(0, 100) + '...' }}
+                                </p>
+                                <div class="flex justify-between items-center text-xs text-gray-700">
+                                    <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                    <span>{{ formatDate(post.publishedAt) }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
                 </div>
             </section>
 
@@ -753,7 +810,7 @@ const hasCoverConfig = computed(() => {
 
 // Pré-carregamento otimizado de imagens críticas
 const criticalImages = computed(() => {
-    const images = [];
+    const images: string[] = [];
     
     // Sempre pré-carregar a imagem do banner principal
     if (posts.value.length > 0 && posts.value[0].featureImage) {
@@ -775,9 +832,9 @@ const criticalImages = computed(() => {
 const preloadLinks = computed(() => {
     return criticalImages.value.map(url => ({
         rel: 'preload',
-        as: 'image',
+        as: 'image' as const,
         href: url,
-        fetchpriority: 'high',
+        fetchpriority: 'high' as const,
         type: 'image/jpeg' // assumindo que a maioria será JPEG
     }));
 });
@@ -1099,7 +1156,7 @@ onMounted(async () => {
             });
             
             // Remove posts duplicados usando o ID como chave
-            const uniquePosts = [];
+            const uniquePosts: any[] = [];
             const seenIds = new Set();
             
             for (const post of sortedPosts) {
@@ -1112,7 +1169,7 @@ onMounted(async () => {
             console.log(`Após remover duplicatas: ${uniquePosts.length} posts únicos`);
             
             // Usar apenas posts únicos, até o máximo de 12
-            let finalPosts = uniquePosts;
+            let finalPosts: any[] = uniquePosts;
             if (finalPosts.length > 12) {
                 finalPosts = finalPosts.slice(0, 12);
             }
@@ -1162,7 +1219,7 @@ const useFallbackPopularPosts = () => {
             const additionalNeeded = 8 - popularPosts.value.length;
             if (additionalNeeded > 0 && popularPosts.value.length > 0) {
                 // Duplicar os primeiros posts para preencher
-                const duplicates = [];
+                const duplicates: any[] = [];
                 for (let i = 0; i < additionalNeeded; i++) {
                     const duplicatePost = {...popularPosts.value[i % popularPosts.value.length]};
                     // Adicionar um sufixo ao ID para evitar problemas de chave duplicada
@@ -1258,7 +1315,7 @@ const scrollToMoreContentSection = () => {
 const groupPosts = (posts: any[], postsPerGroup: number) => {
     if (!posts || !Array.isArray(posts)) return [];
     
-    const groups = [];
+    const groups: any[][] = [];
     for (let i = 0; i < posts.length; i += postsPerGroup) {
         groups.push(posts.slice(i, i + postsPerGroup));
     }
@@ -1357,6 +1414,7 @@ const handleWindowResize = () => {
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
