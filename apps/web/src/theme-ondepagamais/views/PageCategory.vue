@@ -1,16 +1,16 @@
 <template>
-    <div class="w-full relative bg-neutral-100">
+    <div class="w-full relative bg-[#d1d5db]">
         <div class="lg:max-w-6xl md:max-w-3xl mx-auto px-4 py-6">
             <div v-if="!category" class="text-center">
-                <h1 class="text-2xl font-bold text-neutral-800 mb-4">Categoria não encontrada</h1>
-                <p class="text-neutral-600">A categoria que você está procurando não existe ou está indisponível.</p>
+                <h1 class="text-2xl font-bold text-gray-800 mb-4">Categoria não encontrada</h1>
+                <p class="text-gray-600">A categoria que você está procurando não existe ou está indisponível.</p>
             </div>
 
             <div v-else>
                 <header class="mb-8">
-                    <h1 class="text-4xl font-bold text-[#0052cc] mb-3 text-center">{{ category.name }}</h1>
-                    <p v-if="category.description" class="text-neutral-600 mb-4 text-center">{{ category.description }}</p>
-                    <div class="text-sm text-neutral-500 mb-2">{{ category.postCount }} posts nesta categoria</div>
+                    <h1 class="text-4xl font-bold text-[#0891b2] mb-3 text-center">{{ category.name }}</h1>
+                    <p v-if="category.description" class="text-gray-600 mb-4 text-center">{{ category.description }}</p>
+                    <div class="text-sm text-gray-500 mb-2">{{ category.postCount }} posts nesta categoria</div>
                     <div class="w-full h-[3px] bg-yellow-500"></div>
                 </header>
 
@@ -24,13 +24,13 @@
 
                 <!-- Initial loading state -->
                 <div v-if="loading && posts.length === 0" class="flex justify-center items-center py-20">
-                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0052cc]"></div>
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0891b2]"></div>
                 </div>
 
                 <!-- Posts Grid Layout -->
                 <div v-else-if="posts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <template v-for="(post, index) in posts" :key="post.id">
-                        <div class="card flex flex-col h-full border border-neutral-200 rounded-md overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                        <div class="card flex flex-col h-full border border-gray-600 bg-white rounded-md overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                             <!-- Feature Image -->
                             <a :href="`/post/${post.slug}`" class="block relative aspect-video overflow-hidden" aria-label="Ler mais sobre este post">
                                 <div v-if="post.featureImage" class="w-full h-full">
@@ -48,7 +48,7 @@
 
                                 <!-- Post Title -->
                                 <h2 class="text-lg font-bold text-neutral-900 mb-2">
-                                    <a :href="`/post/${post.slug}`" class="hover:text-[#0052cc] transition-colors" aria-label="Ler mais sobre este post">
+                                    <a :href="`/post/${post.slug}`" class="hover:text-[#0891b2] transition-colors" aria-label="Ler mais sobre este post">
                                         {{ post.title }}
                                     </a>
                                 </h2>
@@ -72,8 +72,8 @@
 
                 <!-- No posts state -->
                 <div v-else-if="!loading && posts.length === 0" class="text-center py-16">
-                    <h2 class="text-2xl font-bold mb-2 text-neutral-800">Nenhum post encontrado nesta categoria</h2>
-                    <p class="text-neutral-600">Volte mais tarde para novos conteúdos!</p>
+                    <h2 class="text-2xl font-bold mb-2 text-gray-800">Nenhum post encontrado nesta categoria</h2>
+                    <p class="text-gray-600">Volte mais tarde para novos conteúdos!</p>
                 </div>
 
                 <!-- Anúncio horizontal antes do carregamento de mais posts -->
@@ -86,7 +86,7 @@
 
                 <!-- Loading more indicator -->
                 <div v-if="loadingMore" class="mt-8 flex justify-center items-center py-6">
-                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0052cc]"></div>
+                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0891b2]"></div>
                 </div>
 
                 <!-- Intersection observer target -->
@@ -259,7 +259,7 @@ onUnmounted(() => {
 }
 
 .post-content :deep(blockquote) {
-    border-left: 4px solid #0052cc;
+    border-left: 4px solid #0891b2;
     padding-left: 1rem;
     margin: 1rem 0;
     color: #666;
@@ -290,7 +290,7 @@ onUnmounted(() => {
 }
 
 .post-content :deep(a) {
-    color: #0052cc;
+    color: #0891b2;
     text-decoration: underline;
 }
 

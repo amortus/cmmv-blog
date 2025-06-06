@@ -1,21 +1,21 @@
 <template>
-    <div class="w-full relative bg-neutral-100">
+    <div class="w-full relative bg-[#d1d5db]">
         <div class="lg:max-w-4xl md:max-w-3xl px-4 sm:px-6 mx-auto py-8">
-            <div v-if="!page" class="bg-gray-50 rounded-lg p-6">
+            <div v-if="!page" class="bg-white rounded-lg p-6">
                 <div class="text-center">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Página não encontrada</h1>
                     <p class="text-neutral-600">A página que você está procurando não existe ou está indisponível.</p>
                 </div>
             </div>
 
-            <div v-else class="article-container w-full max-w-[728px] m-auto bg-gray-50 rounded-lg p-6">
+            <div v-else class="article-container w-full max-w-[728px] m-auto bg-white rounded-lg p-6">
                 <div v-if="page.featureImage" class="post-featured-image relative overflow-hidden rounded-lg mb-6">
                     <div class="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
                         <a
                             v-for="category in page.categories"
                             :key="category.id"
                             :href="`/category/${category.slug}`"
-                            class="px-3 py-1 bg-[#0052cc] text-white text-sm font-medium rounded-full shadow-sm hover:bg-[#003d99] transition-all"
+                            class="px-3 py-1 bg-[#0891b2] text-white text-sm font-medium rounded-full shadow-sm hover:bg-[#0891b2]/80 transition-all"
                         >
                             {{ category.name }}
                         </a>
@@ -203,7 +203,7 @@ useHead(headData);
 }
 
 .post-content :deep(blockquote) {
-    border-left: 4px solid #0052cc;
+    border-left: 4px solid #0891b2;
     padding-left: 1rem;
     margin: 1rem 0;
     color: #666;
@@ -234,7 +234,7 @@ useHead(headData);
 }
 
 .post-content :deep(a) {
-    color: #0052cc;
+    color: #0891b2;
     text-decoration: underline;
 }
 

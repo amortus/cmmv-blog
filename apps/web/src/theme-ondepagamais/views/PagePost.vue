@@ -1,7 +1,7 @@
 <template>
-    <div class="w-full relative bg-neutral-100">
+    <div class="w-full relative bg-[#d1d5db]">
         <div class="w-full max-w-[1200px] mx-auto px-4">
-            <div v-if="!post" class="bg-gray-50 rounded-lg p-6">
+            <div v-if="!post" class="bg-white rounded-lg p-6">
                 <div class="text-center">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Post não encontrado</h1>
                     <p class="text-neutral-600">O post que você está procurando não existe ou está indisponível.</p>
@@ -27,14 +27,14 @@
                     <div class="flex-grow">
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                             <!-- Main Post Content (2 columns width) -->
-                            <div class="lg:col-span-3 bg-gray-50 rounded-lg p-4 relative">
+                            <div class="lg:col-span-3 bg-white rounded-lg p-4 relative">
                                 <div class="w-full mx-auto overflow-hidden">
                                     <h1 class="post-title text-neutral-900 text-3xl md:text-4xl font-bold break-words mb-4">{{ post.title }}</h1>
 
                                     <div v-if="post.featureImage" class="post-featured-image relative overflow-hidden rounded-lg max-h-[400px]">
                                         <div class="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
                                             <a v-for="category in post.categories" :key="category.id" :href="`/category/${category.slug}`"
-                                                class="px-3 py-1 bg-[#0052cc] text-white text-sm font-medium rounded-full shadow-sm hover:bg-[#003d99] transition-all">
+                                                class="px-3 py-1 bg-[#0891b2] text-white text-sm font-medium rounded-full shadow-sm hover:bg-[#0891b2]/80 transition-all">
                                                 {{ category.name }}
                                             </a>
                                         </div>
@@ -103,7 +103,7 @@
 
                                     <!-- Author Box -->
                                     <div v-if="author"
-                                        class="mb-10 p-6 bg-neutral-50 rounded-lg border border-neutral-200 mt-8">
+                                        class="mb-10 p-6 bg-white rounded-lg border border-neutral-200 mt-8">
                                         <div class="flex items-center mb-4">
                                             <!-- Author Avatar -->
                                             <div
@@ -220,13 +220,13 @@
 
                                     <!-- Mais Conteúdo Section -->
                                     <div class="mt-10">
-                                        <h2 class="text-xl font-bold mb-6 pb-2 text-[#0052cc] border-b-2 border-[#fbbf24]">
+                                        <h2 class="text-xl font-bold mb-6 pb-2 text-[#0891b2] border-b-2 border-[#fbbf24]">
                                             Mais Conteúdo
                                         </h2>
 
                                         <div ref="relatedPostsObserver" class="min-h-[200px]">
                                             <div v-if="!relatedPostsLoaded" class="flex justify-center items-center py-6">
-                                                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0052cc]"></div>
+                                                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0891b2]"></div>
                                                 <span class="ml-3 text-gray-600">Carregando posts relacionados...</span>
                                             </div>
 
@@ -258,7 +258,7 @@
                                                     </a>
                                                     <div class="p-4">
                                                         <a :href="`/post/${relatedPost.slug}`" class="block">
-                                                            <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#0052cc] transition-colors line-clamp-2">
+                                                            <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#0891b2] transition-colors line-clamp-2">
                                                                 {{ relatedPost.title }}
                                                             </h3>
                                                         </a>
@@ -324,9 +324,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Share Widget -->
-                                <div class="bg-gray-50 rounded-lg shadow-md p-5 mb-6">
-                                    <h2 class="text-xl font-bold mb-4 pb-2 text-[#0052cc] border-b-2 border-[#fbbf24]">
+                                                <!-- Share Widget -->
+                <div class="bg-white rounded-lg shadow-md p-5 mb-6">
+                                    <h2 class="text-xl font-bold mb-4 pb-2 text-[#0891b2] border-b-2 border-[#fbbf24]">
                                         Compartilhar
                                     </h2>
                                     <div class="flex flex-wrap gap-2">
@@ -1259,7 +1259,7 @@ const sidebarLeftAdContainer = ref(null);
 }
 
 .post-content :deep(blockquote) {
-    border-left: 4px solid #0052cc;
+    border-left: 4px solid #0891b2;
     padding-left: 1rem;
     margin: 1rem 0;
     color: #666;
@@ -1290,7 +1290,7 @@ const sidebarLeftAdContainer = ref(null);
 }
 
 .post-content :deep(a) {
-    color: #0052cc;
+    color: #0891b2;
     text-decoration: underline;
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col min-h-screen bg-gray-100">
+    <div class="flex flex-col min-h-screen bg-[#d1d5db]">
         <!-- Header -->
         <header class="bg-gray-200 sticky top-0 z-50 shadow-md">
             <div class="max-w-[1200px] mx-auto px-4">
@@ -267,7 +267,7 @@
 
                 <div class="border-t border-gray-700 mt-8 pt-6 text-center">
                     <p class="text-gray-400 text-sm">
-                        &copy; {{ new Date().getFullYear() }} Aquiesportes - Todos os direitos reservados.
+                        &copy; {{ new Date().getFullYear() }} Onde Paga Mais - Todos os direitos reservados.
                     </p>
                 </div>
             </div>

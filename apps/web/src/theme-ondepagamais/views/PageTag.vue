@@ -1,14 +1,14 @@
 <template>
-    <div class="w-full relative bg-neutral-100">
+    <div class="w-full relative bg-[#d1d5db]">
         <div class="lg:max-w-4xl md:max-w-3xl mx-auto">
-            <div v-if="!data.tag" class="bg-gray-50 rounded-lg p-6">
+            <div v-if="!data.tag" class="bg-white rounded-lg p-6">
                 <div class="text-center">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Tag não encontrada</h1>
                     <p class="text-neutral-600">A tag que você está procurando não existe ou está indisponível.</p>
                                 </div>
                             </div>
 
-            <div v-else class="bg-gray-50 rounded-lg p-6 article-container overflow-hidden">
+            <div v-else class="bg-white rounded-lg p-6 article-container overflow-hidden">
                 <header class="border-b border-neutral-200 pb-4 mb-6 pr-4 pt-4">
                     <h1 class="text-3xl font-bold text-neutral-900 mb-3">Tag: {{ data.tag.name }}</h1>
                     <p v-if="data.tag.description" class="text-neutral-600 mb-4">{{ data.tag.description }}</p>
