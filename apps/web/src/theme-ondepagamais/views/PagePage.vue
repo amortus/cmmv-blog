@@ -1,14 +1,14 @@
 <template>
     <div class="w-full relative bg-neutral-100">
         <div class="lg:max-w-4xl md:max-w-3xl px-4 sm:px-6 mx-auto py-8">
-            <div v-if="!page" class="bg-white rounded-lg p-6">
+            <div v-if="!page" class="bg-gray-50 rounded-lg p-6">
                 <div class="text-center">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Página não encontrada</h1>
                     <p class="text-neutral-600">A página que você está procurando não existe ou está indisponível.</p>
                 </div>
             </div>
 
-            <div v-else class="article-container w-full max-w-[728px] m-auto bg-white rounded-lg p-6">
+            <div v-else class="article-container w-full max-w-[728px] m-auto bg-gray-50 rounded-lg p-6">
                 <div v-if="page.featureImage" class="post-featured-image relative overflow-hidden rounded-lg mb-6">
                     <div class="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
                         <a

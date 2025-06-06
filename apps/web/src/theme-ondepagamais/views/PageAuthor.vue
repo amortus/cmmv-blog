@@ -1,7 +1,7 @@
 <template>
     <div class="w-full relative bg-neutral-100">
         <div class="lg:max-w-4xl md:max-w-3xl px-4 sm:px-6 mx-auto py-8">
-            <div v-if="!author" class="bg-white rounded-lg p-6">
+            <div v-if="!author" class="bg-gray-50 rounded-lg p-6">
                 <div class="text-center">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Autor não encontrado</h1>
                     <p class="text-neutral-600">O autor que você está procurando não existe ou está indisponível.</p>
@@ -16,10 +16,10 @@
                     <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black/30 to-transparent"></div>
                 </div>
 
-                <div class="relative bg-white rounded-lg -mt-20 border border-neutral-100 mb-8">
+                <div class="relative bg-gray-50 rounded-lg -mt-20 border border-neutral-100 mb-8">
                     <div class="p-6 pt-20 md:p-8 md:pt-20 md:pb-6 items-center justify-center">
                         <div class="absolute left-1/2 -translate-x-1/2 -top-16 flex items-center justify-center">
-                            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
+                            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-50">
                                 <img v-if="author.image" :src="author.image" :alt="author.name" class="w-full h-full object-cover" />
                                 <div v-else class="w-full h-full flex items-center justify-center bg-[#0891b2] text-white text-3xl font-bold">
                                     {{ authorInitials }}
@@ -96,7 +96,7 @@
                 <div class="space-y-6 mb-10">
                     <template v-if="authorPosts && (authorPosts.length > 0 || (authorPosts.posts && authorPosts.posts.length > 0))">
                         <div v-for="post in (authorPosts.posts || authorPosts)" :key="post.id"
-                             class="bg-white rounded-lg overflow-hidden border border-neutral-100 transition-shadow">
+                             class="bg-gray-50 rounded-lg overflow-hidden border border-neutral-100 transition-shadow">
 
                             <div class="flex items-center p-4 border-b border-neutral-100">
                                 <div class="w-10 h-10 rounded-full overflow-hidden bg-neutral-200 mr-3">
@@ -168,7 +168,7 @@
                         </div>
                     </template>
 
-                    <div v-else class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div v-else class="bg-gray-50 rounded-lg shadow-md p-6 text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-neutral-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>

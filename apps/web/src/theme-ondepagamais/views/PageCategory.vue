@@ -15,7 +15,7 @@
                 </header>
 
                 <!-- Anúncio horizontal abaixo do cabeçalho -->
-                <div class="w-full bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center mb-8 overflow-hidden">
+                <div class="w-full bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center mb-8 overflow-hidden">
                     <div class="h-24 md:h-28 lg:h-32 w-full flex items-center justify-center text-gray-400">
                         <!-- Slot para anúncio -->
                         <span class="text-sm">Espaço para anúncio</span>
@@ -61,7 +61,7 @@
                         </div>
                         
                         <!-- Anúncio no formato de card a cada 6 posts -->
-                        <div v-if="(index + 1) % 6 === 0 && index !== 0" class="card flex flex-col h-full border border-gray-200 bg-gray-100 rounded-md overflow-hidden">
+                        <div v-if="(index + 1) % 6 === 0 && index !== 0" class="card flex flex-col h-full border border-gray-300 bg-gray-100 rounded-md overflow-hidden">
                             <div class="h-full min-h-[280px] w-full flex items-center justify-center text-gray-400">
                                 <!-- Slot para anúncio entre cards -->
                                 <span class="text-sm">Anúncio</span>
@@ -77,7 +77,7 @@
                 </div>
 
                 <!-- Anúncio horizontal antes do carregamento de mais posts -->
-                <div v-if="posts.length > 0 && hasMorePosts" class="w-full bg-gray-100 border border-gray-200 rounded-md flex items-center justify-center my-8 overflow-hidden">
+                <div v-if="posts.length > 0 && hasMorePosts" class="w-full bg-gray-100 border border-gray-300 rounded-md flex items-center justify-center my-8 overflow-hidden">
                     <div class="h-24 md:h-28 w-full flex items-center justify-center text-gray-400">
                         <!-- Slot para anúncio -->
                         <span class="text-sm">Espaço para anúncio</span>

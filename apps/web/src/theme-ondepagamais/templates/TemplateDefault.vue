@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col min-h-screen bg-[#f8fafc]">
+    <div class="flex flex-col min-h-screen bg-gray-100">
         <!-- Header -->
         <header class="bg-gray-200 sticky top-0 z-50 shadow-md">
             <div class="max-w-[1200px] mx-auto px-4">
@@ -17,7 +17,7 @@
                             <div v-if="mainNavCategories.childrenMap[category.id]" class="relative">
                                 <button
                                     @click="(e) => toggleDropdown(category.id, e)"
-                                    class="dropdown-toggle text-gray-800 hover:bg-[#0891b2] dark:hover:bg-[#06b6d4] hover:text-white px-3 py-2 rounded text-lg flex items-center whitespace-nowrap transition-colors"
+                                    class="dropdown-toggle text-gray-800 hover:bg-[#0891b2] dark:hover:bg-[#06b6d4] hover:text-white px-3 py-2 rounded text-lg font-bold flex items-center whitespace-nowrap transition-colors"
                                     :class="{'bg-[#0891b2] text-white': openDropdowns[category.id]}"
                                     :aria-label="`Menu ${category.name}`"
                                     aria-haspopup="true"
@@ -409,12 +409,12 @@ useHead({
         const links = [
             {
                 rel: 'stylesheet',
-                href: '/src/theme-aquiesportes/style.css'
+                href: '/src/theme-ondepagamais/style.css'
             },
             // Configuração principal do favicon - mantemos apenas este
             {
                 rel: 'icon',
-                href: '/src/theme-aquiesportes/favicon.ico?v=2'
+                href: '/src/theme-ondepagamais/favicon.ico?v=2'
             },
             { rel: 'preconnect', href: 'https://www.googletagmanager.com/' },
             { rel: 'preconnect', href: 'https://www.google-analytics.com/' },

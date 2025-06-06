@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div v-if="error" class="text-center py-16 bg-white rounded-lg shadow-md">
+        <div v-if="error" class="text-center py-16 bg-gray-50 rounded-lg shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="posts.length === 0" class="text-center py-16 bg-white rounded-lg shadow-md">
+        <div v-else-if="posts.length === 0" class="text-center py-16 bg-gray-50 rounded-lg shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -41,7 +41,7 @@
             <!-- Cover Section -->
             <section v-if="posts.length > 0" class="mb-6 md:block hidden">
                 <!-- Full Layout (default) -->
-                <div v-if="coverSettings.layoutType === 'full' || !coverSettings.layoutType" class="bg-white rounded-lg overflow-hidden shadow-md">
+                <div v-if="coverSettings.layoutType === 'full' || !coverSettings.layoutType" class="bg-gray-50 rounded-lg overflow-hidden shadow-md">
                     <a v-if="coverPosts.full" :href="`/post/${coverPosts.full.slug}`" class="block">
                         <div class="relative h-[400px]">
                             <OptimizedImage
@@ -79,7 +79,7 @@
                 </div>
 
                 <!-- Carousel Layout -->
-                <div v-else-if="coverSettings.layoutType === 'carousel'" class="bg-white rounded-lg overflow-hidden shadow-md">
+                <div v-else-if="coverSettings.layoutType === 'carousel'" class="bg-gray-50 rounded-lg overflow-hidden shadow-md">
                     <div class="relative h-[400px]">
                         <div v-for="(post, index) in coverPosts.carousel" :key="post.id"
                              class="absolute w-full h-full transition-opacity duration-500 ease-in-out"
@@ -140,8 +140,8 @@
                                 v-for="(_, index) in coverPosts.carousel"
                                 :key="index"
                                 @click="currentCarouselIndex = index"
-                                class="w-3 h-3 rounded-full bg-white/50 focus:outline-none"
-                                :class="{ 'bg-white': currentCarouselIndex === index }"
+                                class="w-3 h-3 rounded-full bg-gray-50/50 focus:outline-none"
+                                :class="{ 'bg-gray-50': currentCarouselIndex === index }"
                                 :aria-label="`Ir para slide ${index + 1}`"
                             ></button>
                         </div>
@@ -150,7 +150,7 @@
 
                 <!-- Split Layout (1 large, 2 small) -->
                 <div v-else-if="coverSettings.layoutType === 'split'" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="md:col-span-2 bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="md:col-span-2 bg-gray-50 rounded-lg overflow-hidden shadow-md">
                         <a v-if="coverPosts.splitMain" :href="`/post/${coverPosts.splitMain.slug}`" class="block h-full">
                             <div class="relative h-full">
                                 <OptimizedImage
@@ -187,7 +187,7 @@
                         </a>
                     </div>
                     <div class="md:col-span-1 flex flex-col gap-4">
-                        <div v-for="(post, index) in coverPosts.splitSide" :key="post.id" class="flex-1 bg-white rounded-lg overflow-hidden shadow-md">
+                        <div v-for="(post, index) in coverPosts.splitSide" :key="post.id" class="flex-1 bg-gray-50 rounded-lg overflow-hidden shadow-md">
                             <a :href="`/post/${post.slug}`" class="block h-full">
                                 <div class="relative h-full">
                                     <img
@@ -220,7 +220,7 @@
 
                 <!-- Dual Layout (2 equal columns) -->
                 <div v-else-if="coverSettings.layoutType === 'dual'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div v-for="post in coverPosts.dual" :key="post.id" class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <div v-for="post in coverPosts.dual" :key="post.id" class="bg-gray-50 rounded-lg overflow-hidden shadow-md">
                         <a :href="`/post/${post.slug}`" class="block">
                             <div class="relative h-[350px]">
                                 <img
@@ -328,7 +328,7 @@
                         </article>
                         
                         <!-- Anúncio nativo (parece um card de conteúdo) -->
-                        <div v-if="adSettings.enableAds" class="rounded-lg overflow-hidden shadow-sm bg-white">
+                        <div v-if="adSettings.enableAds" class="rounded-lg overflow-hidden shadow-sm bg-gray-50">
                             <div class="ad-container ad-native py-2 px-4 h-full flex flex-col" v-if="getAdHtml('native')">
                                 <div v-html="getAdHtml('native')" class="h-full"></div>
                             </div>
@@ -475,7 +475,7 @@
                     </article>
                     
                     <!-- Anúncio nativo entre posts populares -->
-                    <div v-if="adSettings.enableAds" class="rounded-lg overflow-hidden shadow-sm bg-white">
+                    <div v-if="adSettings.enableAds" class="rounded-lg overflow-hidden shadow-sm bg-gray-50">
                         <div class="ad-container ad-native-popular py-2 px-4 h-full flex flex-col" v-if="getAdHtml('nativePopular')">
                             <div v-html="getAdHtml('nativePopular')" class="h-full"></div>
                         </div>
@@ -596,7 +596,7 @@
                             <!-- Anúncio nativo após o 3º post -->
                             <div 
                                 v-if="adSettings.enableAds && index === 2" 
-                                class="rounded-lg overflow-hidden shadow-sm bg-white"
+                                class="rounded-lg overflow-hidden shadow-sm bg-gray-50"
                             >
                                 <div class="ad-container ad-native-more-content py-2 px-4 h-full flex flex-col" v-if="getAdHtml('nativeMoreContent')">
                                     <div v-html="getAdHtml('nativeMoreContent')" class="h-full"></div>

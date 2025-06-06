@@ -1,7 +1,7 @@
 <template>
     <div class="w-full relative bg-neutral-100">
         <div class="w-full max-w-[1200px] mx-auto px-4">
-            <div v-if="!post" class="bg-white rounded-lg p-6">
+            <div v-if="!post" class="bg-gray-50 rounded-lg p-6">
                 <div class="text-center">
                     <h1 class="text-2xl font-bold text-neutral-800 mb-4">Post não encontrado</h1>
                     <p class="text-neutral-600">O post que você está procurando não existe ou está indisponível.</p>
@@ -27,7 +27,7 @@
                     <div class="flex-grow">
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                             <!-- Main Post Content (2 columns width) -->
-                            <div class="lg:col-span-3 bg-white rounded-lg p-4 relative">
+                            <div class="lg:col-span-3 bg-gray-50 rounded-lg p-4 relative">
                                 <div class="w-full mx-auto overflow-hidden">
                                     <h1 class="post-title text-neutral-900 text-3xl md:text-4xl font-bold break-words mb-4">{{ post.title }}</h1>
 
@@ -234,7 +234,7 @@
                                                 <article
                                                     v-for="relatedPost in relatedPosts"
                                                     :key="relatedPost.id"
-                                                    class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow transform hover:-translate-y-1 duration-300"
+                                                    class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow transform hover:-translate-y-1 duration-300"
                                                 >
                                                     <a :href="`/post/${relatedPost.slug}`" class="block">
                                                         <div class="h-48 overflow-hidden relative">
@@ -325,7 +325,7 @@
                                 </div>
 
                                 <!-- Share Widget -->
-                                <div class="bg-white rounded-lg shadow-md p-5 mb-6">
+                                <div class="bg-gray-50 rounded-lg shadow-md p-5 mb-6">
                                     <h2 class="text-xl font-bold mb-4 pb-2 text-[#0052cc] border-b-2 border-[#fbbf24]">
                                         Compartilhar
                                     </h2>
