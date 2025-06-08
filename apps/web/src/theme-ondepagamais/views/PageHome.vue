@@ -107,7 +107,7 @@
                                             </span>
                                         </div>
                                         <h3 class="text-base font-bold mb-2 text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] bg-black/30 inline-block py-1 px-2 rounded">{{ post.title }}</h3>
-                                        <span class="text-sm text-white hover:text-[#fbbf24] transition-colors drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] bg-black/25 px-2 py-1 rounded inline-block">
+                                        <span class="text-sm text-white hover:bg-[#06b6d4] transition-colors drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] bg-[#0891b2] px-2 py-1 rounded inline-block ml-2">
                                             Continuar lendo &rarr;
                                         </span>
                                     </div>
