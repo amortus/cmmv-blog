@@ -39,15 +39,15 @@
 
         <div v-else>
             <!-- Cover Section - 3 Mais Notícias -->
-            <section v-if="posts.length > 0" class="mb-6 md:block hidden">
+            <section v-if="posts.length > 0" class="mb-6">
                 <h2 class="text-2xl font-bold mb-4 text-[#0891b2] border-b-2 border-[#fbbf24] pb-2">
-                    Destaques
+                    Recentes
                 </h2>
                 
-                <!-- Layout Split Fixo (1 grande, 2 pequenas) -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[400px]">
+                <!-- Layout Split Responsivo -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:h-[400px]">
                     <!-- Post Principal (Grande - à esquerda) -->
-                    <div class="md:col-span-2 bg-gray-50 rounded-lg overflow-hidden shadow-md">
+                    <div class="md:col-span-2 bg-gray-50 rounded-lg overflow-hidden shadow-md h-[300px] md:h-full">
                         <a v-if="posts[0]" :href="`/post/${posts[0].slug}`" class="block h-full">
                             <div class="relative h-full">
                                 <OptimizedImage
@@ -85,8 +85,8 @@
                     </div>
                     
                     <!-- Posts Secundários (Pequenos - à direita) -->
-                    <div class="md:col-span-1 flex flex-col gap-4">
-                        <div v-for="(post, index) in posts.slice(1, 3)" :key="post.id" class="flex-1 bg-gray-50 rounded-lg overflow-hidden shadow-md min-h-[190px]">
+                    <div class="md:col-span-1 grid grid-cols-2 md:flex md:flex-col gap-4">
+                        <div v-for="(post, index) in posts.slice(1, 3)" :key="post.id" class="bg-gray-50 rounded-lg overflow-hidden shadow-md h-[200px] md:min-h-[190px] md:flex-1">
                             <a :href="`/post/${post.slug}`" class="block h-full">
                                 <div class="relative h-full">
                                     <img
