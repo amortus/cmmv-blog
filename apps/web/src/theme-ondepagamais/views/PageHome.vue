@@ -146,7 +146,7 @@
                         <!-- Posts começando do 4º (já que os 3 primeiros estão na seção de destaque) -->
                         <template v-for="(post, index) in visibleMainPosts" :key="post.id">
                             <article
-                                class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm"
+                                class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm bg-white"
                             >
                                 <!-- Conteúdo do card do post -->
                                 <a :href="`/post/${post.slug}`" class="block">
