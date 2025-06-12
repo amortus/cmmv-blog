@@ -49,7 +49,7 @@
 
     <!-- Predictions Content -->
     <div v-else-if="topPredictions.length > 0" class="p-4 space-y-4 relative z-10">
-      <div v-for="(prediction, index) in topPredictions" :key="index" class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+      <div v-for="(prediction, index) in topPredictions.slice(0, maxPredictions)" :key="index" class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
         <!-- Match Header -->
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center space-x-3">
@@ -141,12 +141,14 @@ interface Props {
   enableApi?: boolean;
   apiUrl?: string;
   apiPassword?: string;
+  maxPredictions?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   enableApi: false,
   apiUrl: 'https://smartbetsapi.onrender.com',
-  apiPassword: ''
+  apiPassword: '',
+  maxPredictions: 2
 });
 
 const {

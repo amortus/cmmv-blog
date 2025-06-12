@@ -3298,6 +3298,46 @@
                                         </p>
                                     </div>
 
+                                    <!-- Sidebar Predictions Option -->
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="block text-sm font-medium text-neutral-300">
+                                                Show in Sidebar
+                                            </label>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    v-model="settings.enableFootballSidebar"
+                                                    class="sr-only peer"
+                                                />
+                                                <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-neutral-500">
+                                            Enable this to show football predictions in the right sidebar instead of between posts.
+                                        </p>
+                                    </div>
+
+                                    <!-- Number of Sidebar Predictions -->
+                                    <div v-if="settings.enableFootballSidebar" class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            Number of Sidebar Predictions
+                                        </label>
+                                        <select
+                                            v-model="settings.footballSidebarCount"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        >
+                                            <option value="1">1 Prediction</option>
+                                            <option value="2">2 Predictions</option>
+                                            <option value="3">3 Predictions</option>
+                                            <option value="4">4 Predictions</option>
+                                            <option value="5">5 Predictions</option>
+                                        </select>
+                                        <p class="text-xs text-neutral-500">
+                                            Choose how many predictions to show in the sidebar.
+                                        </p>
+                                    </div>
+
                                     <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
                                         <div class="flex">
                                             <div class="flex-shrink-0">
@@ -3316,6 +3356,69 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Main Predictions Toggle -->
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <label class="block text-sm font-medium text-neutral-300">
+                                                Enable Football Predictions
+                                            </label>
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    v-model="settings.enableFootballPredictions"
+                                                    class="sr-only peer"
+                                                />
+                                                <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                </label>
+                                        </div>
+                                        <p class="text-xs text-neutral-500">
+                                            Enable this to show football predictions between posts on the homepage.
+                                        </p>
+                                    </div>
+
+                                    <!-- Central Predictions Options -->
+                                    <div v-if="settings.enableFootballPredictions" class="space-y-4 pl-4 border-l-2 border-blue-500">
+                                        <!-- Enable Central Predictions -->
+                                        <div class="space-y-2">
+                                            <div class="flex items-center justify-between">
+                                                <label class="block text-sm font-medium text-neutral-300">
+                                                    Show Between Posts
+                                                </label>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        v-model="settings.enableCentralPredictions"
+                                                        class="sr-only peer"
+                                                    />
+                                                    <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                                    </label>
+                                            </div>
+                                            <p class="text-xs text-neutral-500">
+                                                Show football predictions between posts in the main content area.
+                                            </p>
+                                        </div>
+
+                                        <!-- Number of Games per Central Prediction -->
+                                        <div v-if="settings.enableCentralPredictions" class="space-y-2">
+                                            <label class="block text-sm font-medium text-neutral-300">
+                                                Games per Prediction Block
+                                            </label>
+                                            <select
+                                                v-model="settings.centralPredictionsCount"
+                                                class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            >
+                                                <option value="1">1 Game</option>
+                                                <option value="2">2 Games</option>
+                                                <option value="3">3 Games</option>
+                                                <option value="4">4 Games</option>
+                                                <option value="5">5 Games</option>
+                                            </select>
+                                            <p class="text-xs text-neutral-500">
+                                                Choose how many games to show in each prediction block between posts.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -4609,6 +4712,10 @@ const settings = ref({
     footballApiUrl: "https://smartbetsapi.onrender.com",
     footballApiPassword: "",
     footballCompetition: "Campeonato Brasileiro Série A",
+    enableFootballSidebar: false,
+    footballSidebarCount: "2",
+    enableCentralPredictions: false,
+    centralPredictionsCount: "2",
 });
 
 const tabFieldMap = {
@@ -4867,6 +4974,10 @@ const tabFieldMap = {
         "footballApiUrl",
         "footballApiPassword",
         "footballCompetition",
+        "enableFootballSidebar",
+        "footballSidebarCount",
+        "enableCentralPredictions",
+        "centralPredictionsCount",
     ],
 };
 
