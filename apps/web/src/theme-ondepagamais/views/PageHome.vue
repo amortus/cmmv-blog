@@ -191,9 +191,9 @@
                                 </div>
                             </article>
                             
-                            <!-- Anúncio nativo a cada 6 posts -->
+                            <!-- Anúncio nativo a cada 9 posts, evitando conflito com predições -->
                             <div 
-                                v-if="adSettings.enableAds && (index + 1) % 6 === 0" 
+                                v-if="adSettings.enableAds && (index + 1) % 9 === 0 && (index + 1) % 6 !== 0" 
                                 class="rounded-lg overflow-hidden shadow-sm bg-gray-50"
                             >
                                 <div class="ad-container ad-native py-2 px-4 h-full flex flex-col" v-if="getAdHtml('native')">
@@ -211,9 +211,9 @@
                             </div>
 
 
-                            <!-- Predições de Futebol a cada 3 posts -->
+                            <!-- Predições de Futebol a cada 6 posts -->
                             <div 
-                                v-if="footballPredictionsEnabled && (index + 1) % 3 === 0" 
+                                v-if="footballPredictionsEnabled && (index + 1) % 6 === 0" 
                                 class="sm:col-span-2 lg:col-span-3"
                             >
                                 <FootballPredictions 
