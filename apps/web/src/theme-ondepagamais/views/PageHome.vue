@@ -17,12 +17,14 @@
             </div>
         </div>
 
+
+
         <div v-if="error" class="text-center py-16 bg-gray-50 rounded-lg shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Erro ao carregar posts</h2>
-            <p class="text-gray-600 mb-4">Não foi possível carregar os posts. Por favor, tente novamente.</p>
+            <p class="text-gray-600 mb-4">{{ error ? (error as any).message || 'Erro desconhecido' : 'Não foi possível carregar os posts. Por favor, tente novamente.' }}</p>
             <button @click="loadPosts" class="px-4 py-2 bg-[#0891b2] text-white rounded-md hover:bg-[#06b6d4] transition-colors">
                 Tentar novamente
             </button>
@@ -143,6 +145,10 @@
                     
                     <!-- Main Content em um único grid de 3 colunas com scroll infinito -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+
+
+
+
                         <!-- Posts começando do 4º (já que os 3 primeiros estão na seção de destaque) -->
                         <template v-for="(post, index) in visibleMainPosts" :key="post.id">
                             <article
@@ -203,6 +209,19 @@
                                     </div>
                                 </div>
                             </div>
+
+
+                            <!-- Predições de Futebol a cada 3 posts -->
+                            <div 
+                                v-if="footballPredictionsEnabled && (index + 1) % 3 === 0" 
+                                class="sm:col-span-2 lg:col-span-3"
+                            >
+                                <FootballPredictions 
+                                    :enable-api="footballPredictionsEnabled"
+                                    :api-url="footballApiUrl"
+                                    :api-password="footballApiPassword"
+                                />
+                            </div>
                         </template>
                     </div>
 
@@ -248,6 +267,7 @@ import { usePostsStore } from '../../store/posts';
 import { formatDate, stripHtml } from '../../composables/useUtils';
 import { useAds } from '../../composables/useAds';
 import OptimizedImage from '../composables/OptimizedImage.vue';
+import FootballPredictions from '../components/FootballPredictions.vue';
 
 // Declare adsbygoogle for TypeScript
 declare global {
@@ -299,6 +319,20 @@ const adPluginSettings = computed(() => {
 // Set up ads functionality using the composable
 const { adSettings, getAdHtml, loadAdScripts, loadSidebarLeftAd } = useAds(adPluginSettings.value, 'home');
 
+// Football predictions settings
+const footballPredictionsEnabled = computed(() => {
+    const value = settings.value.enableFootballPredictions;
+    return value === 'true' || value === true || value === '1' || value === 1;
+});
+
+const footballApiUrl = computed(() => {
+    return settings.value.footballApiUrl || 'https://smartbetsapi.onrender.com';
+});
+
+const footballApiPassword = computed(() => {
+    return settings.value.footballApiPassword || '';
+});
+
 // Novas configurações de anúncios adicionais
 const adPositions = [
   'betweenSections',
@@ -324,7 +358,7 @@ const hasCoverConfig = computed(() => {
 
 // Pré-carregamento otimizado de imagens críticas
 const criticalImages = computed(() => {
-    const images = [];
+    const images: string[] = [];
     
     // Sempre pré-carregar a imagem do banner principal
     if (posts.value.length > 0 && posts.value[0].featureImage) {
@@ -334,18 +368,7 @@ const criticalImages = computed(() => {
     return images;
 });
 
-// Melhor gerenciamento de preload de imagens
-const preloadLinks = computed(() => {
-    return criticalImages.value.map(url => ({
-        rel: 'preload',
-        as: 'image',
-        href: url,
-        fetchpriority: 'high',
-        type: 'image/jpeg' // assumindo que a maioria será JPEG
-    }));
-});
-
-// Configurar metadados e preloads no head
+// Configurar metadados no head
 useHead({
     title: computed(() => settings.value.title),
     meta: computed(() => [
@@ -355,8 +378,7 @@ useHead({
         { property: 'og:title', content: settings.value.title },
         { property: 'og:description', content: settings.value.description },
         { property: 'og:image', content: settings.value.logo }
-    ]),
-    link: computed(() => preloadLinks.value)
+    ])
 });
 
 // Função otimizada para adicionar preload manualmente
@@ -519,7 +541,7 @@ const loadPosts = async () => {
         const response: any = await blogAPI.posts.getAll(currentPage.value * pagination.value.limit);
 
         if (response) {
-            posts.value = response.posts;
+            posts.value = response.posts || [];
 
             pagination.value = {
                 total: response.meta?.pagination?.total || 0,
@@ -527,7 +549,7 @@ const loadPosts = async () => {
                 offset: response.meta?.pagination?.offset || 0
             };
 
-            hasMorePosts.value = posts.value.length < response.count;
+            hasMorePosts.value = posts.value.length < (response.count || 0);
 
             if (!categories.value.length) {
                 try {
@@ -646,10 +668,6 @@ onMounted(async () => {
     if (posts.value && posts.value.length > 0 && posts.value[0].featureImage) {
         addPreload(posts.value[0].featureImage);
     }
-    
-
-    
-
 });
 
 
@@ -686,7 +704,7 @@ const visibleMainPosts = computed(() => {
 const groupPosts = (posts: any[], postsPerGroup: number) => {
     if (!posts || !Array.isArray(posts)) return [];
     
-    const groups = [];
+    const groups: any[][] = [];
     for (let i = 0; i < posts.length; i += postsPerGroup) {
         groups.push(posts.slice(i, i + postsPerGroup));
     }

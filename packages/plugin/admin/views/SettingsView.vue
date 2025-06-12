@@ -3211,6 +3211,115 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Football Predictions -->
+                            <div class="space-y-4 p-4 border border-neutral-700 rounded-md">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-medium text-white">
+                                        ⚽ Football Predictions
+                                    </h3>
+                                    <div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                                type="checkbox"
+                                                v-model="settings.enableFootballPredictions"
+                                                class="sr-only peer"
+                                            />
+                                            <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div v-if="settings.enableFootballPredictions" class="space-y-4">
+                                    <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                                        <div class="flex">
+                                            <div class="flex-shrink-0">
+                                                <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <div class="ml-3">
+                                                <h3 class="text-sm font-medium text-blue-800">
+                                                    Football Predictions Integration
+                                                </h3>
+                                                <div class="mt-2 text-sm text-blue-700">
+                                                    <p>
+                                                        This feature adds intelligent football predictions for Brazilian Championship games between your news posts. 
+                                                        Uses <a href="https://github.com/Simatwa/smartbetsAPI" target="_blank" class="underline">SmartBets API</a> 
+                                                        for real predictions or simulated data for demonstration.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            Competition Name
+                                        </label>
+                                        <input
+                                            v-model="settings.footballCompetition"
+                                            type="text"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            placeholder="Campeonato Brasileiro Série A"
+                                        />
+                                        <p class="text-xs text-neutral-500">
+                                            Name of the football competition to display
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            API URL
+                                        </label>
+                                        <input
+                                            v-model="settings.footballApiUrl"
+                                            type="url"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            placeholder="https://smartbetsapi.onrender.com"
+                                        />
+                                        <p class="text-xs text-neutral-500">
+                                            URL for the SmartBets API. Leave default for official API.
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            API Password <span class="text-neutral-500">(Optional)</span>
+                                        </label>
+                                        <input
+                                            v-model="settings.footballApiPassword"
+                                            type="password"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            placeholder="Enter API password for real predictions"
+                                        />
+                                        <p class="text-xs text-neutral-500">
+                                            If provided, will use real API predictions. If empty, will use simulated data for demonstration.
+                                        </p>
+                                    </div>
+
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                                        <div class="flex">
+                                            <div class="flex-shrink-0">
+                                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <div class="ml-3">
+                                                <h3 class="text-sm font-medium text-yellow-800">
+                                                    Responsible Gaming Notice
+                                                </h3>
+                                                <div class="mt-2 text-sm text-yellow-700">
+                                                    <p>
+                                                        Predictions are for entertainment and informational purposes only. 
+                                                        Always promote responsible gaming. Content includes appropriate disclaimers.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -4494,6 +4603,12 @@ const settings = ref({
 
     inContentAdGap: 3,
     maxInContentAds: 2,
+
+    // Football Predictions Settings
+    enableFootballPredictions: false,
+    footballApiUrl: "https://smartbetsapi.onrender.com",
+    footballApiPassword: "",
+    footballCompetition: "Campeonato Brasileiro Série A",
 });
 
 const tabFieldMap = {
@@ -4700,6 +4815,58 @@ const tabFieldMap = {
         "spacesRegion",
         "spacesEndpoint",
         "spacesUrl",
+    ],
+    advertising: [
+        "enableAds",
+        "showAdsLoggedIn",
+        "enableAdSense",
+        "adSensePublisherId",
+        "adSenseAutoAdsCode",
+        "enableAdSenseAutoAds",
+        "adSenseHeaderBanner",
+        "adSenseSidebarTop",
+        "adSenseSidebarBottom",
+        "adSenseInArticle",
+        "adSenseBelowContent",
+        "adSenseSidebarMid",
+        "adSenseSidebarLeft",
+        "adSenseSidebarRight",
+        "adSenseAfterCover",
+        "enableCustomAds",
+        "customHeaderBanner",
+        "customSidebarTop",
+        "customSidebarBottom",
+        "customInArticle",
+        "customBelowContent",
+        "enableAmazonAds",
+        "amazonAssociateId",
+        "amazonSidebarAd",
+        "amazonInContentAd",
+        "amazonBelowContentAd",
+        "enableTaboolaAds",
+        "taboolaPublisherId",
+        "taboolaBelowArticle",
+        "taboolaRightRail",
+        "taboolaFooter",
+        "taboolaJsCode",
+        "homePageHeader",
+        "homePageSidebarTop",
+        "homePageSidebarBottom",
+        "homePageAfterPosts",
+        "homePageFooter",
+        "articlePageHeader",
+        "articlePageSidebarTop",
+        "articlePageSidebarBottom",
+        "articlePageAfterTitle",
+        "articlePageInContent",
+        "articlePageAfterContent",
+        "articlePageFooter",
+        "inContentAdGap",
+        "maxInContentAds",
+        "enableFootballPredictions",
+        "footballApiUrl",
+        "footballApiPassword",
+        "footballCompetition",
     ],
 };
 
