@@ -355,6 +355,11 @@ async function bootstrap() {
 
     const port = env.VITE_SSR_PORT || 5001;
 
+    // Configure server timeouts
+    server.timeout = 30000; // 30 seconds
+    server.keepAliveTimeout = 5000; // 5 seconds
+    server.headersTimeout = 10000; // 10 seconds
+
     // @ts-ignore
     serverInstance = server.listen(port, "0.0.0.0", () => {
         console.log(`🚀 SSR server running at http://localhost:${port}`);

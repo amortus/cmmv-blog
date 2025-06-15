@@ -65,7 +65,9 @@
             "@cmmv/odds": ["../../packages/odds/api"],
             "@cmmv/odds/*": ["../../packages/odds/api/*"],
             "@cmmv/newsletter": ["../../packages/newsletter/api"],
-            "@cmmv/newsletter/*": ["../../packages/newsletter/api/*"]
+            "@cmmv/newsletter/*": ["../../packages/newsletter/api/*"],
+            "@cmmv/football-predictions": ["../../packages/football-predictions/api"],
+            "@cmmv/football-predictions/*": ["../../packages/football-predictions/api/*"]
         }
     },
     "include": ["src/**/*", ".generated/**/*"],

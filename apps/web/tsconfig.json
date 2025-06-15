@@ -22,7 +22,9 @@
             "@cmmv/odds": ["../../packages/odds"],
             "@cmmv/odds/*": ["../../packages/odds/*"],
             "@cmmv/newsletter": ["../../packages/newsletter"],
-            "@cmmv/newsletter/*": ["../../packages/newsletter/*"]
+            "@cmmv/newsletter/*": ["../../packages/newsletter/*"],
+            "@cmmv/football-predictions": ["../../packages/football-predictions"],
+            "@cmmv/football-predictions/*": ["../../packages/football-predictions/*"]
         }
     },
     "ts-node": {

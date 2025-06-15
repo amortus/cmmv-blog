@@ -1,225 +1,376 @@
 <template>
-  <div class="football-field-bg rounded-lg shadow-lg border-2 border-white overflow-hidden relative">
-    <!-- Campo de futebol - linhas decorativas -->
-    <div class="absolute inset-0 pointer-events-none">
-      <!-- Linha central horizontal -->
-      <div class="absolute top-1/2 left-0 right-0 h-0.5 bg-white/50 transform -translate-y-1/2"></div>
-      <!-- Círculo central -->
-      <div class="absolute top-1/2 left-1/2 w-20 h-20 border-2 border-white/40 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-      <!-- Linhas verticais sutis -->
-      <div class="absolute top-0 bottom-0 left-1/4 w-0.5 bg-white/30"></div>
-      <div class="absolute top-0 bottom-0 right-1/4 w-0.5 bg-white/30"></div>
-      <!-- Pequenas áreas nos cantos -->
-      <div class="absolute top-2 left-2 w-8 h-8 border-l-2 border-t-2 border-white/25"></div>
-      <div class="absolute top-2 right-2 w-8 h-8 border-r-2 border-t-2 border-white/25"></div>
-    </div>
-    
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-green-600 to-blue-600 text-white p-4 relative z-10">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2z" />
-          </svg>
-          <h3 class="text-lg font-bold">⚽ Brasileirão Série A</h3>
-        </div>
-        <span class="bg-white/20 px-2 py-1 rounded-full text-xs font-medium">
-          Predições Inteligentes
-        </span>
-      </div>
-    </div>
+  <div v-if="enablePredictions" class="football-predictions">
 
-    <!-- Loading State -->
-    <div v-if="loading" class="p-6 relative z-10">
-      <div class="flex items-center justify-center space-x-2">
-        <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-green-600"></div>
-        <span class="text-gray-600">Carregando predições...</span>
-      </div>
-    </div>
 
-    <!-- Error State -->
-    <div v-else-if="error" class="p-6 relative z-10">
-      <div class="text-center text-red-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <p class="text-sm">Erro ao carregar predições</p>
-      </div>
-    </div>
+    <div class="predictions-container">
+      <div class="predictions-header">
+        <h3>⚽ Predições de Futebol</h3>
+        <p class="competition-name">{{ competition }}</p>
 
-    <!-- Predictions Content -->
-    <div v-else-if="topPredictions.length > 0" class="p-4 space-y-4 relative z-10">
-      <div v-for="(prediction, index) in topPredictions.slice(0, maxPredictions)" :key="index" class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-        <!-- Match Header -->
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center space-x-3">
-            <div class="text-center">
-              <div class="text-sm font-bold text-gray-800">{{ prediction.homeTeam }}</div>
-              <div class="text-xs text-gray-500">Casa</div>
+      </div>
+
+
+
+      <div v-if="loading" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Carregando predições...</p>
+      </div>
+
+      <div v-else-if="error" class="error-state">
+        <p>{{ error }}</p>
+        <button @click="loadPredictions" class="retry-button">Tentar Novamente</button>
+      </div>
+
+      <div v-else-if="displayPredictions.length > 0" class="predictions-grid">
+        <div 
+          v-for="(prediction, index) in displayPredictions" 
+          :key="`${prediction.homeTeam}-${prediction.awayTeam}-${index}`"
+          class="prediction-card"
+        >
+          <div class="match-info">
+            <div class="teams">
+              <span class="home-team">{{ prediction.homeTeam }}</span>
+              <span class="vs">vs</span>
+              <span class="away-team">{{ prediction.awayTeam }}</span>
             </div>
-            <div class="flex flex-col items-center">
-              <span class="text-lg font-bold text-gray-600">VS</span>
-              <div v-if="prediction.matchDate" class="text-xs text-gray-400 mt-1">
-                {{ formatMatchDate(prediction.matchDate) }}
+            <div v-if="prediction.matchDate" class="match-date">
+              {{ formatMatchDate(prediction.matchDate) }}
+            </div>
+          </div>
+
+          <div class="prediction-details">
+            <div class="main-prediction">
+              <span class="prediction-label">{{ getPickLabel(prediction.pick) }}</span>
+              <span class="prediction-result">{{ getResultLabel(prediction.result) }}</span>
+              <span class="confidence">{{ prediction.choice }}%</span>
+            </div>
+
+            <div class="additional-stats">
+              <div class="stat">
+                <span class="stat-label">Ambas Marcam</span>
+                <span class="stat-value">{{ prediction.gg }}%</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Mais de 2.5</span>
+                <span class="stat-value">{{ prediction.ov25 }}%</span>
               </div>
             </div>
-            <div class="text-center">
-              <div class="text-sm font-bold text-gray-800">{{ prediction.awayTeam }}</div>
-              <div class="text-xs text-gray-500">Fora</div>
-            </div>
-          </div>
-          <div class="text-right">
-            <div class="text-xs text-gray-500">Confiança</div>
-            <div class="text-lg font-bold text-green-600">{{ prediction.choice }}%</div>
-          </div>
-        </div>
-
-        <!-- Prediction Details -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-          <div class="text-center bg-gray-50 rounded p-2">
-            <div class="text-xs text-gray-500">Resultado</div>
-            <div class="font-semibold text-blue-600">{{ getResultLabel(prediction.result) }}</div>
-          </div>
-          <div class="text-center bg-gray-50 rounded p-2">
-            <div class="text-xs text-gray-500">Melhor Pick</div>
-            <div class="font-semibold text-purple-600 text-xs">{{ getPickLabel(prediction.pick) }}</div>
-          </div>
-          <div class="text-center bg-gray-50 rounded p-2">
-            <div class="text-xs text-gray-500">Ambas Marcam</div>
-            <div class="font-semibold text-orange-600">{{ prediction.gg }}%</div>
-          </div>
-          <div class="text-center bg-gray-50 rounded p-2">
-            <div class="text-xs text-gray-500">+2.5 Gols</div>
-            <div class="font-semibold text-red-600">{{ prediction.ov25 }}%</div>
-          </div>
-        </div>
-
-        <!-- Progress bars for key metrics -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-gray-600">Mais de 1.5 Gols</span>
-            <span class="font-semibold">{{ prediction.ov15 }}%</span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              class="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
-              :style="{ width: `${prediction.ov15}%` }"
-            ></div>
           </div>
         </div>
       </div>
 
-      <!-- Footer with disclaimer -->
-      <div class="text-center py-2 border-t border-white/30">
-        <p class="text-xs text-white/90">
-          📊 Predições baseadas em análise estatística • Jogue com responsabilidade
-        </p>
-        <div class="flex items-center justify-center space-x-4 mt-2 text-xs text-white/80">
-          <span>🎯 Acurácia média: 72%</span>
-          <span>•</span>
-          <span>⚡ Atualizado em tempo real</span>
-        </div>
+      <div v-else class="no-predictions">
+        <p>Nenhuma predição disponível no momento.</p>
+        <button @click="loadPredictions" class="retry-button">Recarregar</button>
       </div>
-    </div>
 
-    <!-- Empty State -->
-    <div v-else class="p-6 text-center relative z-10">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-      <p class="text-gray-600 text-sm">Nenhuma predição disponível no momento</p>
-      <p class="text-gray-400 text-xs mt-1">Volte mais tarde para novas análises</p>
+      <div class="responsible-gaming">
+        <p>⚠️ <strong>Jogo Responsável:</strong> Predições são apenas para entretenimento. Aposte com responsabilidade.</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useFootballPredictions } from '../composables/useFootballPredictions';
+import { ref, computed, onMounted } from 'vue'
+import { useFootballPredictions } from '../composables/useFootballPredictions'
 
-interface Props {
-  enableApi?: boolean;
-  apiUrl?: string;
-  apiPassword?: string;
-  maxPredictions?: number;
-}
+const props = defineProps<{
+  gamesPerBlock?: number
+  enableApi?: boolean
+  apiUrl?: string
+  apiPassword?: string
+  maxPredictions?: number
+  settings?: Record<string, any>
+}>()
 
-const props = withDefaults(defineProps<Props>(), {
-  enableApi: false,
-  apiUrl: 'https://smartbetsapi.onrender.com',
-  apiPassword: '',
-  maxPredictions: 2
-});
+
 
 const {
   loading,
   error,
-  topPredictions,
+  predictions,
   loadPredictions,
   getResultLabel,
   getPickLabel,
-  formatMatchDate
+  formatMatchDate,
+  enablePredictions,
+  isUsingRealApi,
+  apiStatus,
+  apiUrl,
+  competition
 } = useFootballPredictions({
   enablePredictions: props.enableApi,
   apiUrl: props.apiUrl,
   apiPassword: props.apiPassword,
-  competition: 'Campeonato Brasileiro Série A'
-});
+  settings: props.settings
+})
+
+
+
+// Get settings for display
+const gamesPerBlock = computed(() => props.maxPredictions || props.gamesPerBlock || 2)
+
+const displayPredictions = computed(() => {
+  return predictions.value.slice(0, gamesPerBlock.value)
+})
+
+
 
 onMounted(() => {
-  loadPredictions();
-});
+  // Only load predictions on client-side to avoid SSR issues
+  if (enablePredictions.value && typeof window !== 'undefined') {
+    loadPredictions()
+  }
+})
 </script>
 
 <style scoped>
-/* Campo de futebol - fundo verde escuro realista */
-.football-field-bg {
-  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
-  background-color: #16a34a !important;
+.football-predictions {
+  margin: 2rem 0;
+  position: relative;
 }
 
-/* Estilo adicional para animações suaves */
-.transition-all {
-  transition: all 0.3s ease;
+
+
+.predictions-container {
+  background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 50%, #2d5a27 100%);
+  border: 3px solid #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Estilo para os cards de predição */
-.bg-gradient-to-br {
-  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+/* Football field styling */
+.predictions-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
-.bg-gradient-to-r {
-  background-image: linear-gradient(to right, var(--tw-gradient-stops));
-}
-
-/* Hover effects */
-.bg-white:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .grid-cols-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Garantir que o fundo verde seja mantido */
-.football-field-bg::before {
+.predictions-container::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
-  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
 }
 
-/* Garantir que o conteúdo fique acima do fundo */
-.football-field-bg > * {
+.predictions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 8px;
+  color: white;
+}
+
+.predictions-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.competition-name {
+  margin: 0;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+
+
+
+
+.loading-state, .error-state, .no-predictions {
+  text-align: center;
+  padding: 2rem;
+  color: white;
   position: relative;
   z-index: 2;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.predictions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.prediction-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.prediction-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.match-info {
+  margin-bottom: 1rem;
+}
+
+.teams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-team, .away-team {
+  font-weight: bold;
+  color: #2d5a27;
+}
+
+.vs {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.match-date {
+  text-align: center;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.prediction-details {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.main-prediction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.prediction-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.prediction-result {
+  font-weight: bold;
+  color: #2d5a27;
+}
+
+.confidence {
+  background: #4CAF50;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.additional-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #2d5a27;
+  font-size: 0.9rem;
+}
+
+.retry-button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.retry-button:hover {
+  background: #45a049;
+}
+
+.responsible-gaming {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.responsible-gaming p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #d32f2f;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .predictions-container {
+    padding: 1rem;
+  }
+  
+  .predictions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .debug-panel {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+  }
 }
 </style> 

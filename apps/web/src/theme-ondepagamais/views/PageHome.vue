@@ -133,77 +133,77 @@
 
             <!-- Main Content Layout -->
             <div class="w-full relative">
-                <!-- Título principal que abrange toda a largura -->
-                <h2 class="text-xl font-bold mb-4 pb-2 text-[#0891b2] border-b-2 border-[#fbbf24]">
-                    Mais Notícias
-                </h2>
-                
-                <!-- Main Content em um único grid de 3 colunas com scroll infinito -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Título principal que abrange toda a largura -->
+                    <h2 class="text-xl font-bold mb-4 pb-2 text-[#0891b2] border-b-2 border-[#fbbf24]">
+                        Mais Notícias
+                    </h2>
+                    
+                    <!-- Main Content em um único grid de 3 colunas com scroll infinito -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
 
 
 
 
-                    <!-- Posts começando do 4º (já que os 3 primeiros estão na seção de destaque) -->
-                    <template v-for="(post, index) in visibleMainPosts" :key="post.id">
-                        <article
-                            class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm bg-gray-50"
-                        >
-                            <!-- Conteúdo do card do post -->
-                            <a :href="`/post/${post.slug}`" class="block">
-                                <div class="h-48 overflow-hidden relative">
-                                    <img
-                                        v-if="post.featureImage"
-                                        :src="post.featureImage"
-                                        :alt="post.title"
-                                        class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-                                        width="400"
-                                        height="225"
-                                        :loading="index < 6 ? 'eager' : 'lazy'"
-                                    />
-                                    <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
-                                        <span class="bg-[#fbbf24] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
-                                            {{ post.categories[0].name }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                            <div class="p-4">
+                        <!-- Posts começando do 4º (já que os 3 primeiros estão na seção de destaque) -->
+                        <template v-for="(post, index) in visibleMainPosts" :key="post.id">
+                            <article
+                                class="rounded-lg overflow-hidden transition-transform hover:-translate-y-1 duration-300 shadow-sm bg-gray-50"
+                            >
+                                <!-- Conteúdo do card do post -->
                                 <a :href="`/post/${post.slug}`" class="block">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#0891b2] transition-colors">
-                                        {{ post.title }}
-                                    </h3>
+                                    <div class="h-48 overflow-hidden relative">
+                                        <img
+                                            v-if="post.featureImage"
+                                            :src="post.featureImage"
+                                            :alt="post.title"
+                                            class="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                            width="400"
+                                            height="225"
+                                            :loading="index < 6 ? 'eager' : 'lazy'"
+                                        />
+                                        <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div v-if="post.categories && post.categories.length > 0" class="absolute top-2 left-2">
+                                            <span class="bg-[#fbbf24] text-[#333] px-2 py-1 rounded-md text-xs font-medium">
+                                                {{ post.categories[0].name }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </a>
-                                <div class="flex justify-between items-center text-xs text-gray-700">
-                                    <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
-                                    <span>{{ formatDate(post.publishedAt) }}</span>
-                                </div>
-                            </div>
-                        </article>
-                        
-                        <!-- Anúncio nativo a cada 9 posts, evitando conflito com predições -->
-                        <div 
-                            v-if="adSettings.enableAds && (index + 1) % 9 === 0 && (index + 1) % 6 !== 0" 
-                            class="rounded-lg overflow-hidden shadow-sm bg-gray-50"
-                        >
-                            <div class="ad-container ad-native py-2 px-4 h-full flex flex-col" v-if="getAdHtml('native')">
-                                <div v-html="getAdHtml('native')" class="h-full"></div>
-                            </div>
-                            <div class="ad-container h-full" v-else>
-                                <div class="h-48 bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-400 text-sm">Anúncio</span>
-                                </div>
                                 <div class="p-4">
-                                    <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                    <a :href="`/post/${post.slug}`" class="block">
+                                        <h3 class="text-lg font-bold text-gray-800 mb-2 hover:text-[#0891b2] transition-colors">
+                                            {{ post.title }}
+                                        </h3>
+                                    </a>
+                                    <div class="flex justify-between items-center text-xs text-gray-700">
+                                        <span v-if="getAuthor(post)">Por {{ getAuthor(post).name }}</span>
+                                        <span>{{ formatDate(post.publishedAt) }}</span>
+                                    </div>
+                                </div>
+                            </article>
+                            
+                        <!-- Anúncio nativo a cada 9 posts, evitando conflito com predições -->
+                            <div 
+                            v-if="adSettings.enableAds && (index + 1) % 9 === 0 && (index + 1) % 6 !== 0" 
+                                class="rounded-lg overflow-hidden shadow-sm bg-gray-50"
+                            >
+                                <div class="ad-container ad-native py-2 px-4 h-full flex flex-col" v-if="getAdHtml('native')">
+                                    <div v-html="getAdHtml('native')" class="h-full"></div>
+                                </div>
+                                <div class="ad-container h-full" v-else>
+                                    <div class="h-48 bg-gray-200 flex items-center justify-center">
+                                        <span class="text-gray-400 text-sm">Anúncio</span>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
 
                         <!-- Predições de Futebol a cada 6 posts -->
@@ -216,31 +216,32 @@
                                 :api-url="footballApiUrl"
                                 :api-password="footballApiPassword"
                                 :max-predictions="centralPredictionsCount"
+                                :settings="settings"
                             />
                         </div>
-                    </template>
-                </div>
-
-                <!-- Bottom AdSense Banner -->
-                <div v-if="adSettings.enableAds && adSettings.homePageAfterPosts" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
-                    <div class="ad-container ad-banner-bottom py-2 px-4" v-if="getAdHtml('belowContent')">
-                        <div v-html="getAdHtml('belowContent')"></div>
+                        </template>
                     </div>
-                    <div class="ad-container ad-banner-bottom py-2 px-4" v-else>
-                        <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
-                            <span>Anúncio Inferior</span>
+
+                    <!-- Bottom AdSense Banner -->
+                    <div v-if="adSettings.enableAds && adSettings.homePageAfterPosts" class="w-full bg-gray-100 rounded-lg mb-6 overflow-hidden flex justify-center">
+                        <div class="ad-container ad-banner-bottom py-2 px-4" v-if="getAdHtml('belowContent')">
+                            <div v-html="getAdHtml('belowContent')"></div>
+                        </div>
+                        <div class="ad-container ad-banner-bottom py-2 px-4" v-else>
+                            <div class="ad-placeholder h-[90px] w-full max-w-[728px] bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+                                <span>Anúncio Inferior</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Loading More Indicator -->
-                <div v-if="loadingMore" class="flex justify-center items-center py-4">
-                    <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0891b2]"></div>
-                    <span class="ml-3 text-gray-600">Carregando mais posts...</span>
-                </div>
+                    <!-- Loading More Indicator -->
+                    <div v-if="loadingMore" class="flex justify-center items-center py-4">
+                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0891b2]"></div>
+                        <span class="ml-3 text-gray-600">Carregando mais posts...</span>
+                    </div>
 
-                <!-- Infinite Scroll Observer Target -->
-                <div ref="observerTarget" class="h-4 w-full"></div>
+                    <!-- Infinite Scroll Observer Target -->
+                    <div ref="observerTarget" class="h-4 w-full"></div>
                 
                 <!-- Sidebar Direita - Predições de Futebol (Overlay) -->
                 <div 
@@ -253,6 +254,7 @@
                             :api-url="footballApiUrl"
                             :api-password="footballApiPassword"
                             :max-predictions="1"
+                            :settings="settings"
                         />
                     </div>
                 </div>

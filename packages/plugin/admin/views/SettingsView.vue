@@ -3212,217 +3212,7 @@
                                 </div>
                             </div>
 
-                            <!-- Football Predictions -->
-                            <div class="space-y-4 p-4 border border-neutral-700 rounded-md">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-medium text-white">
-                                        ⚽ Football Predictions
-                                    </h3>
-                                    <div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                        <input
-                                                type="checkbox"
-                                                v-model="settings.enableFootballPredictions"
-                                                class="sr-only peer"
-                                            />
-                                            <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                </div>
 
-                                <div v-if="settings.enableFootballPredictions" class="space-y-4">
-                                    <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
-                                        <div class="flex">
-                                            <div class="flex-shrink-0">
-                                                <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <div class="ml-3">
-                                                <h3 class="text-sm font-medium text-blue-800">
-                                                    Football Predictions Integration
-                                                </h3>
-                                                <div class="mt-2 text-sm text-blue-700">
-                                                    <p>
-                                                        This feature adds intelligent football predictions for Brazilian Championship games between your news posts. 
-                                                        Uses <a href="https://github.com/Simatwa/smartbetsAPI" target="_blank" class="underline">SmartBets API</a> 
-                                                        for real predictions or simulated data for demonstration.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-2">
-                                        <label class="block text-sm font-medium text-neutral-300">
-                                            Competition Name
-                                        </label>
-                                        <input
-                                            v-model="settings.footballCompetition"
-                                            type="text"
-                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                            placeholder="Campeonato Brasileiro Série A"
-                                        />
-                                        <p class="text-xs text-neutral-500">
-                                            Name of the football competition to display
-                                        </p>
-                                    </div>
-
-                                    <div class="space-y-2">
-                                        <label class="block text-sm font-medium text-neutral-300">
-                                            API URL
-                                        </label>
-                                        <input
-                                            v-model="settings.footballApiUrl"
-                                            type="url"
-                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                            placeholder="https://smartbetsapi.onrender.com"
-                                        />
-                                        <p class="text-xs text-neutral-500">
-                                            URL for the SmartBets API. Leave default for official API.
-                                        </p>
-                                    </div>
-
-                                    <div class="space-y-2">
-                                        <label class="block text-sm font-medium text-neutral-300">
-                                            API Password <span class="text-neutral-500">(Optional)</span>
-                                        </label>
-                                        <input
-                                            v-model="settings.footballApiPassword"
-                                            type="password"
-                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                            placeholder="Enter API password for real predictions"
-                                        />
-                                        <p class="text-xs text-neutral-500">
-                                            If provided, will use real API predictions. If empty, will use simulated data for demonstration.
-                                        </p>
-                                    </div>
-
-                                    <!-- Sidebar Predictions Option -->
-                                    <div class="space-y-2">
-                                        <div class="flex items-center justify-between">
-                                            <label class="block text-sm font-medium text-neutral-300">
-                                                Show in Sidebar
-                                            </label>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    v-model="settings.enableFootballSidebar"
-                                                    class="sr-only peer"
-                                                />
-                                                <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                            </label>
-                                        </div>
-                                        <p class="text-xs text-neutral-500">
-                                            Enable this to show football predictions in the right sidebar instead of between posts.
-                                        </p>
-                                    </div>
-
-                                    <!-- Number of Sidebar Predictions -->
-                                    <div v-if="settings.enableFootballSidebar" class="space-y-2">
-                                        <label class="block text-sm font-medium text-neutral-300">
-                                            Number of Sidebar Predictions
-                                        </label>
-                                        <select
-                                            v-model="settings.footballSidebarCount"
-                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                        >
-                                            <option value="1">1 Prediction</option>
-                                            <option value="2">2 Predictions</option>
-                                            <option value="3">3 Predictions</option>
-                                            <option value="4">4 Predictions</option>
-                                            <option value="5">5 Predictions</option>
-                                        </select>
-                                        <p class="text-xs text-neutral-500">
-                                            Choose how many predictions to show in the sidebar.
-                                        </p>
-                                    </div>
-
-                                    <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-                                        <div class="flex">
-                                            <div class="flex-shrink-0">
-                                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <div class="ml-3">
-                                                <h3 class="text-sm font-medium text-yellow-800">
-                                                    Responsible Gaming Notice
-                                                </h3>
-                                                <div class="mt-2 text-sm text-yellow-700">
-                                                    <p>
-                                                        Predictions are for entertainment and informational purposes only. 
-                                                        Always promote responsible gaming. Content includes appropriate disclaimers.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Main Predictions Toggle -->
-                                    <div class="space-y-2">
-                                        <div class="flex items-center justify-between">
-                                            <label class="block text-sm font-medium text-neutral-300">
-                                                Enable Football Predictions
-                                            </label>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    v-model="settings.enableFootballPredictions"
-                                                    class="sr-only peer"
-                                                />
-                                                <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                                </label>
-                                        </div>
-                                        <p class="text-xs text-neutral-500">
-                                            Enable this to show football predictions between posts on the homepage.
-                                        </p>
-                                    </div>
-
-                                    <!-- Central Predictions Options -->
-                                    <div v-if="settings.enableFootballPredictions" class="space-y-4 pl-4 border-l-2 border-blue-500">
-                                        <!-- Enable Central Predictions -->
-                                        <div class="space-y-2">
-                                            <div class="flex items-center justify-between">
-                                                <label class="block text-sm font-medium text-neutral-300">
-                                                    Show Between Posts
-                                                </label>
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input
-                                                        type="checkbox"
-                                                        v-model="settings.enableCentralPredictions"
-                                                        class="sr-only peer"
-                                                    />
-                                                    <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                                    </label>
-                                            </div>
-                                            <p class="text-xs text-neutral-500">
-                                                Show football predictions between posts in the main content area.
-                                            </p>
-                                        </div>
-
-                                        <!-- Number of Games per Central Prediction -->
-                                        <div v-if="settings.enableCentralPredictions" class="space-y-2">
-                                            <label class="block text-sm font-medium text-neutral-300">
-                                                Games per Prediction Block
-                                            </label>
-                                            <select
-                                                v-model="settings.centralPredictionsCount"
-                                                class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                            >
-                                                <option value="1">1 Game</option>
-                                                <option value="2">2 Games</option>
-                                                <option value="3">3 Games</option>
-                                                <option value="4">4 Games</option>
-                                                <option value="5">5 Games</option>
-                                            </select>
-                                            <p class="text-xs text-neutral-500">
-                                                Choose how many games to show in each prediction block between posts.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -4331,6 +4121,229 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Football Predictions Settings -->
+                    <div class="p-6" v-if="activeTab === 'football-predictions'">
+                        <h2 class="text-xl font-bold text-white mb-6">
+                            ⚽ Football Predictions Settings
+                        </h2>
+                        <div class="space-y-8">
+                            <!-- Main Toggle -->
+                            <div class="space-y-4 p-4 border border-neutral-700 rounded-md">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-medium text-white">
+                                        Enable Football Predictions
+                                    </h3>
+                                    <div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                v-model="settings.enableFootballPredictions"
+                                                class="sr-only peer"
+                                            />
+                                            <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div v-if="settings.enableFootballPredictions" class="space-y-6">
+                                    <!-- Information Panel -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                                        <div class="flex">
+                                            <div class="flex-shrink-0">
+                                                <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                                </svg>
+                                            </div>
+                                            <div class="ml-3">
+                                                <h3 class="text-sm font-medium text-blue-800">
+                                                    Football Predictions Integration
+                                                </h3>
+                                                <div class="mt-2 text-sm text-blue-700">
+                                                    <p>
+                                                        This feature adds intelligent football predictions for Brazilian Championship games between your news posts. 
+                                                        Uses <a href="https://github.com/Simatwa/smartbetsAPI" target="_blank" class="underline">SmartBets API</a> 
+                                                        for real predictions or simulated data for demonstration.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- API Configuration -->
+                                    <div class="grid gap-6 md:grid-cols-2">
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-neutral-300">
+                                                Competition Name
+                                            </label>
+                                            <input
+                                                v-model="settings.footballCompetition"
+                                                type="text"
+                                                class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                                placeholder="Campeonato Brasileiro Série A"
+                                            />
+                                            <p class="text-xs text-neutral-500">
+                                                Name of the football competition to display
+                                            </p>
+                                        </div>
+
+                                        <div class="space-y-2">
+                                            <label class="block text-sm font-medium text-neutral-300">
+                                                API Update Interval
+                                            </label>
+                                            <select
+                                                v-model="settings.footballApiUpdateInterval"
+                                                class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            >
+                                                <option value="1">Every 1 Hour</option>
+                                                <option value="2">Every 2 Hours</option>
+                                                <option value="3">Every 3 Hours</option>
+                                                <option value="6">Every 6 Hours</option>
+                                                <option value="12">Every 12 Hours</option>
+                                                <option value="24">Every 24 Hours</option>
+                                            </select>
+                                            <p class="text-xs text-neutral-500">
+                                                How often to fetch new predictions from the API and update the database.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            API URL
+                                        </label>
+                                        <input
+                                            v-model="settings.footballApiUrl"
+                                            type="url"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            placeholder="https://smartbetsapi.onrender.com"
+                                        />
+                                        <p class="text-xs text-neutral-500">
+                                            URL for the SmartBets API. Leave default for official API.
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            API Password <span class="text-neutral-500">(Optional)</span>
+                                        </label>
+                                        <input
+                                            v-model="settings.footballApiPassword"
+                                            type="password"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            placeholder="Enter API password for real predictions"
+                                        />
+                                        <p class="text-xs text-neutral-500">
+                                            If provided, will use real API predictions. If empty, will use simulated data for demonstration.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Display Options -->
+                            <div v-if="settings.enableFootballPredictions" class="space-y-6">
+                                <!-- Central Predictions -->
+                                <div class="space-y-4 p-4 border border-neutral-700 rounded-md">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-medium text-white">
+                                            Central Predictions (Between Posts)
+                                        </h3>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                v-model="settings.enableCentralPredictions"
+                                                class="sr-only peer"
+                                            />
+                                            <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                    <p class="text-sm text-neutral-400">
+                                        Show football predictions between posts in the main content area.
+                                    </p>
+
+                                    <div v-if="settings.enableCentralPredictions" class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            Games per Prediction Block
+                                        </label>
+                                        <select
+                                            v-model="settings.centralPredictionsCount"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        >
+                                            <option value="1">1 Game</option>
+                                            <option value="2">2 Games</option>
+                                            <option value="3">3 Games</option>
+                                            <option value="4">4 Games</option>
+                                            <option value="5">5 Games</option>
+                                        </select>
+                                        <p class="text-xs text-neutral-500">
+                                            Choose how many games to show in each prediction block between posts.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Sidebar Predictions -->
+                                <div class="space-y-4 p-4 border border-neutral-700 rounded-md">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-medium text-white">
+                                            Sidebar Predictions
+                                        </h3>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                v-model="settings.enableFootballSidebar"
+                                                class="sr-only peer"
+                                            />
+                                            <div class="w-11 h-6 bg-neutral-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        </label>
+                                    </div>
+                                    <p class="text-sm text-neutral-400">
+                                        Show football predictions in the right sidebar.
+                                    </p>
+
+                                    <div v-if="settings.enableFootballSidebar" class="space-y-2">
+                                        <label class="block text-sm font-medium text-neutral-300">
+                                            Number of Sidebar Predictions
+                                        </label>
+                                        <select
+                                            v-model="settings.footballSidebarCount"
+                                            class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        >
+                                            <option value="1">1 Prediction</option>
+                                            <option value="2">2 Predictions</option>
+                                            <option value="3">3 Predictions</option>
+                                            <option value="4">4 Predictions</option>
+                                            <option value="5">5 Predictions</option>
+                                        </select>
+                                        <p class="text-xs text-neutral-500">
+                                            Choose how many predictions to show in the sidebar.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Responsible Gaming Notice -->
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h3 class="text-sm font-medium text-yellow-800">
+                                                Responsible Gaming Notice
+                                            </h3>
+                                            <div class="mt-2 text-sm text-yellow-700">
+                                                <p>
+                                                    Predictions are for entertainment and informational purposes only. 
+                                                    Always promote responsible gaming. Content includes appropriate disclaimers.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -4424,6 +4437,7 @@ const tabs = [
     },
     { id: "ai", name: "AI Tools", icon: "fas fa-robot" },
     { id: "advanced", name: "Advanced", icon: "fas fa-code" },
+    { id: "football-predictions", name: "Football Predictions", icon: "fas fa-futbol" },
     { id: "advertising", name: "Advertising", icon: "fas fa-ad" },
 ];
 
@@ -4709,13 +4723,14 @@ const settings = ref({
 
     // Football Predictions Settings
     enableFootballPredictions: false,
-    footballApiUrl: "https://smartbetsapi.onrender.com",
-    footballApiPassword: "",
+    footballApiUrl: "http://45.92.8.73:8080",
+    footballApiPassword: "futebol123",
     footballCompetition: "Campeonato Brasileiro Série A",
     enableFootballSidebar: false,
     footballSidebarCount: "2",
     enableCentralPredictions: false,
     centralPredictionsCount: "2",
+    footballApiUpdateInterval: "6",
 });
 
 const tabFieldMap = {
@@ -4970,6 +4985,8 @@ const tabFieldMap = {
         "articlePageFooter",
         "inContentAdGap",
         "maxInContentAds",
+    ],
+    "football-predictions": [
         "enableFootballPredictions",
         "footballApiUrl",
         "footballApiPassword",
@@ -4978,6 +4995,7 @@ const tabFieldMap = {
         "footballSidebarCount",
         "enableCentralPredictions",
         "centralPredictionsCount",
+        "footballApiUpdateInterval",
     ],
 };
 

@@ -31,10 +31,17 @@ export async function setup(){
         offset: "0"
     }).toString();
 
-    const settings = await fetch(`${env.VITE_API_URL}/settings`);
-    const categories = await fetch(`${env.VITE_API_URL}/blog/categories`);
-    const posts = await fetch(`${env.VITE_API_URL}/blog/posts?${urlQueries}`);
-    const mostAccessedPosts = await fetch(`${env.VITE_API_URL}/blog/posts/most-accessed`);
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+    try {
+        const settings = await fetch(`${env.VITE_API_URL}/settings`, { signal: controller.signal });
+        const categories = await fetch(`${env.VITE_API_URL}/blog/categories`, { signal: controller.signal });
+        const posts = await fetch(`${env.VITE_API_URL}/blog/posts?${urlQueries}`, { signal: controller.signal });
+        const mostAccessedPosts = await fetch(`${env.VITE_API_URL}/blog/posts/most-accessed`, { signal: controller.signal });
+
+        clearTimeout(timeoutId);
 
     if (!settings.ok)
         throw new Error('Failed to fetch settings');
@@ -46,6 +53,10 @@ export async function setup(){
     categoriesData = await categories.json();
     postsData = await posts.json();
     mostAccessedPostsData = await mostAccessedPosts.json();
+    } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+    }
 }
 
 export async function render(url: string) {

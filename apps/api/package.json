@@ -52,6 +52,7 @@
         "@cmmv/rss-aggregation": "workspace:rss-aggregation",
         "@cmmv/yt-aggregation": "workspace:yt-aggregation",
         "@cmmv/newsletter": "workspace:newsletter",
+        "@cmmv/football-predictions": "workspace:football-predictions",
         "cache-manager-fs-binary": "^1.0.4",
         "firebase-admin": "^13.4.0",
         "sharp": "^0.34.1",

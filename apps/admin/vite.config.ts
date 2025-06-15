@@ -162,7 +162,9 @@ export default defineConfig(async ({ mode }: ConfigEnv): Promise<UserConfig> => 
                 '@cmmv/odds': path.resolve(__dirname, '../../packages/odds/'),
                 '@cmmv/odds/*': path.resolve(__dirname, '../../packages/odds/*'),
                 '@cmmv/newsletter': path.resolve(__dirname, '../../packages/newsletter/'),
-                '@cmmv/newsletter/*': path.resolve(__dirname, '../../packages/newsletter/*')
+                '@cmmv/newsletter/*': path.resolve(__dirname, '../../packages/newsletter/*'),
+                '@cmmv/football-predictions': path.resolve(__dirname, '../../packages/football-predictions/'),
+                '@cmmv/football-predictions/*': path.resolve(__dirname, '../../packages/football-predictions/*')
             }
         },
         server: {
